@@ -1,0 +1,16 @@
+digraph graphname {
+	ratio=compress;
+	// Comment
+	{
+	node [shape=plaintext];
+	L0 -> L1 [style=dotted, arrowhead=none];
+	L1 -> L2 [style=dotted, arrowhead=none];
+	}
+
+	node [shape=circle, style=filled, fillcolor="lightgray", fontcolor="black"];
+        1 -> 2;
+        1 -> 3;
+        1 -> 4;
+        2 -> 5;
+        2 -> 6;
+}

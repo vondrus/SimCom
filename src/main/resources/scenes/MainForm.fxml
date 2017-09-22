@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.input.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import simcom.Console?>
+
+<AnchorPane id="AnchorPane1" prefHeight="800.0" prefWidth="1200.0" stylesheets="/scenes/MainForm.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="simcom.MainFormController">
+    <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+
+        <MenuBar>
+            <Menu mnemonicParsing="false" text="File">
+                <MenuItem mnemonicParsing="false" onAction="#menuItemQuitOnAction" styleClass="iconQuit" text="Quit">
+                    <accelerator>
+                        <KeyCodeCombination alt="UP" code="Q" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                    </accelerator>
+                </MenuItem>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Catalog">
+                <MenuItem mnemonicParsing="false" onAction="#menuItemImportGraphFromFileOnAction" styleClass="iconImportFile" text="Import graph from file">
+                    <accelerator>
+                        <KeyCodeCombination alt="UP" code="I" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                    </accelerator>
+                </MenuItem>
+                <MenuItem mnemonicParsing="false" onAction="#menuItemImportGraphsFromDirectoryOnAction" styleClass="iconImportDirectory" text="Import graphs from directory">
+                    <accelerator>
+                        <KeyCodeCombination alt="UP" code="D" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                    </accelerator>
+                </MenuItem>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Graph">
+                <MenuItem mnemonicParsing="false" onAction="#menuItemCompareGraphsOnAction" styleClass="iconCompare" text="Compare graphs">
+                    <accelerator>
+                        <KeyCodeCombination alt="DOWN" code="P" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                    </accelerator>
+                </MenuItem>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Help">
+                <MenuItem mnemonicParsing="false" onAction="#menuItemAboutOnAction" styleClass="iconAbout" text="About" />
+            </Menu>
+        </MenuBar>
+
+        <TabPane id="TabPane" fx:id="tabPane" tabClosingPolicy="UNAVAILABLE">
+            <Tab id="GraphsTab" fx:id="graphsTab" closable="false" text="Graphs">
+                <HBox>
+                    <VBox id="LeftVBox" prefWidth="10000.0">
+                        <StackPane id="LeftStackPane" fx:id="leftStackPane" onMouseClicked="#leftStackPaneOnMouseClicked" prefHeight="10000.0">
+                            <VBox.margin>
+                                <Insets bottom="2.0" right="2.0" />
+                            </VBox.margin>
+                            <ImageView fx:id="leftStackPaneImageView" pickOnBounds="true" preserveRatio="true" />
+                        </StackPane>
+                        <Pane id="LeftInfoPane" minHeight="25">
+                            <VBox.margin>
+                                <Insets right="2.0" />
+                            </VBox.margin>
+                            <Label id="LeftInfoLabel" fx:id="leftInfoLabel" alignment="BASELINE_CENTER" layoutX="5.0" layoutY="4.0">
+                            </Label>
+                        </Pane>
+                    </VBox>
+                    <VBox id="RightVBox" prefWidth="10000.0">
+                        <StackPane id="RightStackPane" fx:id="rightStackPane" onMouseClicked="#rightStackPaneOnMouseClicked" prefHeight="10000.0">
+                            <VBox.margin>
+                                <Insets bottom="2.0" />
+                            </VBox.margin>
+                            <ImageView fx:id="rightStackPaneImageView" pickOnBounds="true" preserveRatio="true" />
+                        </StackPane>
+                        <Pane id="RightInfoPane" minHeight="25">
+                            <VBox.margin>
+                                <Insets />
+                            </VBox.margin>
+                            <Label id="RightInfoLabel" fx:id="rightInfoLabel" alignment="BASELINE_CENTER" layoutX="5.0" layoutY="4.0">
+                            </Label>
+                        </Pane>
+                    </VBox>
+                </HBox>
+            </Tab>
+            <Tab id="ConsoleTab" fx:id="consoleTab" closable="false" text="Console">
+                <ScrollPane id="ScrollPane" fx:id="scrollPane">
+                    <Console id="Console" fx:id="console" lineSpacing="2.0">
+                        <padding>
+                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        </padding>
+                    </Console>
+                </ScrollPane>
+            </Tab>
+        </TabPane>
+
+    </VBox>
+</AnchorPane>

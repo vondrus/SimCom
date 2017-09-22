@@ -1,0 +1,30 @@
+AnchorPane#AnchorPane1 { -fx-background-color: lightgrey; }
+
+StackPane#LeftStackPane { -fx-background-color: white; }
+
+StackPane#RightStackPane { -fx-background-color: white; }
+
+Pane#LeftInfoPane { -fx-background-color: white; }
+
+Pane#RightInfoPane { -fx-background-color: white; }
+
+ScrollPane { -fx-background-color: white;
+             -fx-background: white; }
+
+TextFlow  { -fx-background-color: white;
+            -fx-font-family: monospace; }
+
+.iconQuit > .label { -fx-graphic: url("../icons/iconQuit.png"); }
+.iconQuit > .accelerator-text { -fx-graphic: none; }
+
+.iconImportFile > .label { -fx-graphic: url("../icons/iconImportFile.png"); }
+.iconImportFile > .accelerator-text { -fx-graphic: none; }
+
+.iconImportDirectory > .label { -fx-graphic: url("../icons/iconImportDirectory.png"); }
+.iconImportDirectory > .accelerator-text { -fx-graphic: none; }
+
+.iconCompare > .label { -fx-graphic: url("../icons/iconCompare.png"); }
+.iconCompare > .accelerator-text { -fx-graphic: none; }
+
+.iconAbout > .label { -fx-graphic: url("../icons/iconAbout.png"); }
+.iconAbout > .accelerator-text { -fx-graphic: none; }
