@@ -12,17 +12,20 @@ import java.io.IOException;
 
 
 class CatalogForm {
+    static final int MENU_ITEM_MODE = 1;
+    static final int LEFT_SIDE_CLICK_MODE = 2;
+    static final int RIGHT_SIDE_CLICK_MODE = 3;
 
-    CatalogForm(MainFormController mainFormController, boolean mainFormInitSide) {
+    CatalogForm(MainFormController mainFormController, int mainFormInitMode) {
         try {
             Stage catalogStage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/scenes/CatalogForm.fxml"));
             Parent root = fxmlLoader.load();
             CatalogFormController catalogFormController = fxmlLoader.getController();
-            catalogFormController.postInitialize(mainFormController, mainFormInitSide);
+            catalogFormController.postInitialize(mainFormController, mainFormInitMode);
             catalogStage.setScene(new Scene(root));
             catalogStage.initModality(Modality.APPLICATION_MODAL);
-            catalogStage.setTitle(GlobalConstants.CATALOG_STAGE_TITLE);
+            catalogStage.setTitle(GlobalConstants.CATALOG_STAGE_TITLE + " (" + mainFormController.getGraphCatalog().size() + " items)");
             catalogStage.addEventHandler(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
                 if (KeyCode.ESCAPE == event.getCode()) {
                     catalogStage.close();

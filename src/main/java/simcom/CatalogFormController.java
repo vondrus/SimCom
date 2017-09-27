@@ -16,45 +16,69 @@ import java.util.ResourceBundle;
 
 
 public class CatalogFormController implements Initializable {
-
     private MainFormController mainFormController;
-    private boolean mainFormInitSide;
+    private int mainFormInitMode;
 
     @FXML
-    private TilePane tilePane1;
+    private TilePane tilePane;
 
-    private void buttonsOnClickAction(ActionEvent event, int buttonIndex) {
+    private void insertToLeftSide(ActionEvent event, int buttonIndex) {
         GraphCatalog graphCatalog = mainFormController.getGraphCatalog();
         GraphCatalogItem item = graphCatalog.getItems().get(buttonIndex);
         CustomGraph graph = item.getGraph();
-
-        if (mainFormInitSide) {
-            CustomGraph rightGraph = mainFormController.getRightGraph();
-            if ((rightGraph == null) || (! rightGraph.getName().equals(graph.getName()))) {
-                mainFormController.setRightGraph(graph);
-                mainFormController.setRightSideGraph(item);
-                ((Stage)(((Button)event.getSource()).getScene().getWindow())).close();
-            }
-            else {
-                Dialogs.graphIsLoadedInformationDialog();
-            }
+        CustomGraph leftGraph = mainFormController.getLeftGraph();
+        if ((leftGraph == null) || (! leftGraph.getName().equals(graph.getName()))) {
+            mainFormController.setLeftGraph(graph);
+            mainFormController.setLeftSideGraph(item);
+            ((Stage)(((Button)event.getSource()).getScene().getWindow())).close();
         }
         else {
-            CustomGraph leftGraph = mainFormController.getLeftGraph();
-            if ((leftGraph == null) || (! leftGraph.getName().equals(graph.getName()))) {
-                mainFormController.setLeftGraph(graph);
-                mainFormController.setLeftSideGraph(item);
-                ((Stage)(((Button)event.getSource()).getScene().getWindow())).close();
-            }
-            else {
-                Dialogs.graphIsLoadedInformationDialog();
-            }
+            Dialogs.graphIsLoadedInformationDialog();
         }
     }
 
-    void postInitialize(MainFormController mainFormController, boolean mainFormInitSide) {
+    private void insertToRightSide(ActionEvent event, int buttonIndex) {
+        GraphCatalog graphCatalog = mainFormController.getGraphCatalog();
+        GraphCatalogItem item = graphCatalog.getItems().get(buttonIndex);
+        CustomGraph graph = item.getGraph();
+        CustomGraph rightGraph = mainFormController.getRightGraph();
+        if ((rightGraph == null) || (! rightGraph.getName().equals(graph.getName()))) {
+            mainFormController.setRightGraph(graph);
+            mainFormController.setRightSideGraph(item);
+            ((Stage)(((Button)event.getSource()).getScene().getWindow())).close();
+        }
+        else {
+            Dialogs.graphIsLoadedInformationDialog();
+        }
+    }
+
+    private void buttonsOnClickAction(ActionEvent event, int buttonIndex) {
+
+        switch (mainFormInitMode) {
+            case CatalogForm.MENU_ITEM_MODE:
+                switch (Dialogs.sideOfGraphInsertionConfirmationDialog()) {
+                    case 2:
+                        insertToLeftSide(event, buttonIndex);
+                        break;
+                    case 3:
+                        insertToRightSide(event, buttonIndex);
+                        break;
+                }
+                break;
+
+            case CatalogForm.LEFT_SIDE_CLICK_MODE:
+                insertToLeftSide(event, buttonIndex);
+                break;
+
+            case CatalogForm.RIGHT_SIDE_CLICK_MODE:
+                insertToRightSide(event, buttonIndex);
+                break;
+        }
+    }
+
+    void postInitialize(MainFormController mainFormController, int mainFormInitMode) {
         this.mainFormController = mainFormController;
-        this.mainFormInitSide = mainFormInitSide;
+        this.mainFormInitMode = mainFormInitMode;
 
         Button[] buttons = new Button[mainFormController.getGraphCatalog().size()];
         for(int i = 0; i < buttons.length; i++){
@@ -76,7 +100,7 @@ public class CatalogFormController implements Initializable {
 
             final int j = i;
             buttons[i].setOnAction(event -> buttonsOnClickAction(event, j));
-            tilePane1.getChildren().add(buttons[i]);
+            tilePane.getChildren().add(buttons[i]);
         }
     }
 

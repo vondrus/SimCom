@@ -3,10 +3,7 @@ package simcom;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
@@ -30,6 +27,8 @@ public class MainFormController implements Initializable {
     private CustomGraph rightGraph;
 
     private GraphCatalog graphCatalog;
+
+    private File catalogFile;
 
     private String lastOpenDirectory;
 
@@ -80,7 +79,7 @@ public class MainFormController implements Initializable {
     @FXML
     private void leftStackPaneOnMouseClicked() {
         if (graphCatalog.size() > 0)
-            new CatalogForm(this, false);
+            new CatalogForm(this, CatalogForm.LEFT_SIDE_CLICK_MODE);
         else
             Dialogs.catalogIsEmptyInformationDialog();
     }
@@ -88,42 +87,63 @@ public class MainFormController implements Initializable {
     @FXML
     private void rightStackPaneOnMouseClicked() {
         if (graphCatalog.size() > 0)
-            new CatalogForm(this, true);
+            new CatalogForm(this, CatalogForm.RIGHT_SIDE_CLICK_MODE);
         else
             Dialogs.catalogIsEmptyInformationDialog();
     }
 
     @SuppressWarnings("Duplicates")
     void setLeftSideGraph(GraphCatalogItem item) {
-        CustomGraph graph = item.getGraph();
-        Image image = item.getImage();
-        leftStackPaneImageView.setImage(image);
-        if ((image.getWidth() > leftStackPane.getWidth()) || (image.getHeight() > leftStackPane.getHeight())) {
-            leftStackPaneImageView.setFitWidth(leftStackPane.getWidth());
-            leftStackPaneImageView.setFitHeight(leftStackPane.getHeight());
-        } else {
+        if (item != null) {
+            CustomGraph graph = item.getGraph();
+            Image image = item.getImage();
+            leftStackPaneImageView.setImage(image);
+            if ((image.getWidth() > leftStackPane.getWidth()) || (image.getHeight() > leftStackPane.getHeight())) {
+                leftStackPaneImageView.setFitWidth(leftStackPane.getWidth());
+                leftStackPaneImageView.setFitHeight(leftStackPane.getHeight());
+            } else {
+                leftStackPaneImageView.setFitWidth(0);
+                leftStackPaneImageView.setFitHeight(0);
+            }
+            leftInfoLabel.setText(createInfoLabelText(graph));
+            console.println("Graph " + graph.getName() + " was loaded from the catalog to the left pane.", console.TEXT_ATTR_NORMAL);
+        }
+        else {
+            leftStackPaneImageView.setPreserveRatio(true);
+            leftStackPaneImageView.setSmooth(true);
+            leftStackPaneImageView.setCache(true);
             leftStackPaneImageView.setFitWidth(0);
             leftStackPaneImageView.setFitHeight(0);
+            leftStackPaneImageView.setImage(new Image("/images/imageClickHere.png"));
+            leftInfoLabel.setText("");
         }
-        leftInfoLabel.setText(createInfoLabelText(graph));
-        console.println("Graph " + graph.getName() + " was loaded from the catalog to the left pane.", console.TEXT_ATTR_NORMAL);
     }
 
     @SuppressWarnings("Duplicates")
     void setRightSideGraph(GraphCatalogItem item) {
-        CustomGraph graph = item.getGraph();
-        Image image = item.getImage();
-        rightStackPaneImageView.setImage(image);
-        if ((image.getWidth() > rightStackPane.getWidth()) ||(image.getHeight() > rightStackPane.getHeight())) {
-            rightStackPaneImageView.setFitWidth(rightStackPane.getWidth());
-            rightStackPaneImageView.setFitHeight(rightStackPane.getHeight());
+        if (item != null) {
+            CustomGraph graph = item.getGraph();
+            Image image = item.getImage();
+            rightStackPaneImageView.setImage(image);
+            if ((image.getWidth() > rightStackPane.getWidth()) || (image.getHeight() > rightStackPane.getHeight())) {
+                rightStackPaneImageView.setFitWidth(rightStackPane.getWidth());
+                rightStackPaneImageView.setFitHeight(rightStackPane.getHeight());
+            } else {
+                rightStackPaneImageView.setFitWidth(0);
+                rightStackPaneImageView.setFitHeight(0);
+            }
+            rightInfoLabel.setText(createInfoLabelText(graph));
+            console.println("Graph " + graph.getName() + " was loaded from the catalog to the right pane.", console.TEXT_ATTR_NORMAL);
         }
         else {
+            rightStackPaneImageView.setPreserveRatio(true);
+            rightStackPaneImageView.setSmooth(true);
+            rightStackPaneImageView.setCache(true);
             rightStackPaneImageView.setFitWidth(0);
             rightStackPaneImageView.setFitHeight(0);
+            rightStackPaneImageView.setImage(new Image("/images/imageClickHere.png"));
+            rightInfoLabel.setText("");
         }
-        rightInfoLabel.setText(createInfoLabelText(graph));
-        console.println("Graph " + graph.getName() + " was loaded from the catalog to the right pane.", console.TEXT_ATTR_NORMAL);
     }
 
     private String createInfoLabelText(CustomGraph graph) {
@@ -132,6 +152,22 @@ public class MainFormController implements Initializable {
         int edges = graph.edgeSet().size();
         int levels = graph.getVerticesLevels();
         return "Name: " + name + ", vertices: " + vertices + ", edges: " + edges + ", levels: " + levels;
+    }
+
+    void checkCatalogFile() {
+        catalogFile = new File(GlobalConstants.CATALOG_FILE_PATH);
+        if (catalogFile.exists()) {
+            GraphCatalogPersistence catalogReader = new GraphCatalogPersistence();
+            graphCatalog = catalogReader.readFromFile(catalogFile);
+            menuItemDeleteContentOfCatalog.setDisable(graphCatalog.size() == 0);
+            menuItemShowContentOfCatalog.setDisable(graphCatalog.size() == 0);
+        }
+        else {
+            Dialogs.catalogNotFoundWarningDialog();
+            graphCatalog = new GraphCatalog();
+            menuItemDeleteContentOfCatalog.setDisable(true);
+            menuItemShowContentOfCatalog.setDisable(true);
+        }
     }
 
     CustomGraph getLeftGraph() {
@@ -154,7 +190,8 @@ public class MainFormController implements Initializable {
         return graphCatalog;
     }
 
-    private void importGraphFromFile(File file, boolean consoleMode) {
+    private boolean importGraphFromFile(File file, boolean consoleMode) {
+        boolean rv = false;
         CustomGraph graph = GraphUtils.loadGraphFromDotFile(file);
         if (graph != null) {
             String graphFilename = file.getName();
@@ -169,6 +206,7 @@ public class MainFormController implements Initializable {
                                 GraphCatalogPersistence catalogWriter = new GraphCatalogPersistence();
                                 catalogWriter.writeToFile(new File(GlobalConstants.CATALOG_FILE_PATH), graphCatalog);
                                 console.println("Graph " + graph.getName() + " was added to to the catalog.", console.TEXT_ATTR_NORMAL);
+                                rv = true;
                             } else {
                                 if (consoleMode) {
                                     console.println("Cannot add graph " + graphFilename
@@ -204,6 +242,7 @@ public class MainFormController implements Initializable {
                 }
             }
         }
+        return (rv);
     }
 
     @FXML
@@ -220,8 +259,12 @@ public class MainFormController implements Initializable {
         if (selectedFile != null) {
             String absPath = selectedFile.getAbsolutePath();
             lastOpenDirectory = absPath.substring(0, absPath.lastIndexOf(File.separator));
-            importGraphFromFile(selectedFile, false);
+            if (importGraphFromFile(selectedFile, false)) {
+                tabPane.getSelectionModel().select(consoleTab);
+            }
         }
+        menuItemDeleteContentOfCatalog.setDisable(graphCatalog.size() == 0);
+        menuItemShowContentOfCatalog.setDisable(graphCatalog.size() == 0);
     }
 
     @FXML
@@ -248,15 +291,50 @@ public class MainFormController implements Initializable {
                         }
                     }
                 }
-                // Get focus to console tab.
                 tabPane.getSelectionModel().select(consoleTab);
-
                 if (processedFiles == 0) {
                     Dialogs.noDotFileFoundInformationDialog(selectedDirectory.getAbsolutePath());
                 }
             } else {
                 Dialogs.ioErrorDialog();
             }
+        }
+        menuItemDeleteContentOfCatalog.setDisable(graphCatalog.size() == 0);
+        menuItemShowContentOfCatalog.setDisable(graphCatalog.size() == 0);
+    }
+
+    @FXML
+    private MenuItem menuItemShowContentOfCatalog;
+
+    @FXML
+    private void menuItemShowContentOfCatalogOnAction() {
+        new CatalogForm(this, CatalogForm.MENU_ITEM_MODE);
+    }
+
+    @FXML
+    private MenuItem menuItemDeleteContentOfCatalog;
+
+    @FXML
+    private void menuItemDeleteContentOfCatalogOnAction() {
+        if (Dialogs.deleteContentOfCatalogConfirmationDialog()) {
+            graphCatalog = new GraphCatalog();
+
+            setLeftGraph(null);
+            setLeftSideGraph(null);
+
+            setRightGraph(null);
+            setRightSideGraph(null);
+
+            if (catalogFile.exists()) {
+                if (! catalogFile.delete()) {
+                    Dialogs.ioErrorDialog();
+                }
+            }
+
+            tabPane.getSelectionModel().select(consoleTab);
+            console.println("Content of the catalog was successfully deleted.", console.TEXT_ATTR_NORMAL);
+            menuItemDeleteContentOfCatalog.setDisable(true);
+            menuItemShowContentOfCatalog.setDisable(true);
         }
     }
 
@@ -327,17 +405,8 @@ public class MainFormController implements Initializable {
     @FXML
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        Image image = new Image("/images/imageClickHere.png");
-
-        leftStackPaneImageView.setPreserveRatio(true);
-        leftStackPaneImageView.setSmooth(true);
-        leftStackPaneImageView.setCache(true);
-        leftStackPaneImageView.setImage(image);
-
-        rightStackPaneImageView.setPreserveRatio(true);
-        rightStackPaneImageView.setSmooth(true);
-        rightStackPaneImageView.setCache(true);
-        rightStackPaneImageView.setImage(image);
+        setLeftSideGraph(null);
+        setRightSideGraph(null);
 
         console.getChildren().addListener((ListChangeListener<Node>)
                 ((change) -> {
@@ -347,16 +416,5 @@ public class MainFormController implements Initializable {
                 }));
 
         console.println("Ready.", console.TEXT_ATTR_NORMAL);
-
-        File catalogFile = new File(GlobalConstants.CATALOG_FILE_PATH);
-
-        if (catalogFile.exists()) {
-            GraphCatalogPersistence catalogReader = new GraphCatalogPersistence();
-            graphCatalog = catalogReader.readFromFile(catalogFile);
-        }
-        else {
-            Dialogs.catalogNotFoundWarningDialog();
-            graphCatalog = new GraphCatalog();
-        }
     }
 }

@@ -19,14 +19,25 @@
                 </MenuItem>
             </Menu>
             <Menu mnemonicParsing="false" text="Catalog">
+                <MenuItem mnemonicParsing="false" onAction="#menuItemShowContentOfCatalogOnAction" fx:id="menuItemShowContentOfCatalog" styleClass="iconShowContent" text="Show content">
+                    <accelerator>
+                        <KeyCodeCombination alt="DOWN" code="S" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                    </accelerator>
+                </MenuItem>
+                <MenuItem mnemonicParsing="false" onAction="#menuItemDeleteContentOfCatalogOnAction" fx:id="menuItemDeleteContentOfCatalog" styleClass="iconDeleteContent" text="Delete content">
+                    <accelerator>
+                        <KeyCodeCombination alt="DOWN" code="D" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                    </accelerator>
+                </MenuItem>
+                <SeparatorMenuItem mnemonicParsing="false" />
                 <MenuItem mnemonicParsing="false" onAction="#menuItemImportGraphFromFileOnAction" styleClass="iconImportFile" text="Import graph from file">
                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="I" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                        <KeyCodeCombination alt="DOWN" code="I" control="UP" meta="UP" shift="UP" shortcut="UP" />
                     </accelerator>
                 </MenuItem>
                 <MenuItem mnemonicParsing="false" onAction="#menuItemImportGraphsFromDirectoryOnAction" styleClass="iconImportDirectory" text="Import graphs from directory">
                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="D" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                        <KeyCodeCombination alt="DOWN" code="I" control="UP" meta="UP" shift="DOWN" shortcut="UP" />
                     </accelerator>
                 </MenuItem>
             </Menu>

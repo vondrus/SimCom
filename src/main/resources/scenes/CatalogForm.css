@@ -1,6 +1,6 @@
-ScrollPane#ScrollPane1 { -fx-background-color: gray; }
+ScrollPane#ScrollPane { -fx-background-color: gray; }
 
-TilePane#TilePane1 { -fx-background-color: gray; }
+TilePane#TilePane { -fx-background-color: gray; }
 
 Button { -fx-pref-width: 250px;
          -fx-pref-height: 250px;

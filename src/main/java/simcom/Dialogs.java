@@ -1,16 +1,14 @@
 package simcom;
 
 import javafx.application.Platform;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Optional;
 
 
 class Dialogs {
@@ -122,9 +120,39 @@ class Dialogs {
 
 /* ------------------------------------------------------------------------------------------------------------------ */
 
+    static int sideOfGraphInsertionConfirmationDialog() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation");
+        alert.setHeaderText("To which side of tab do you want to insert selected graph?");
+        alert.setContentText("Choose your option.");
+
+        ButtonType buttonTypeOne = new ButtonType("Left");
+        ButtonType buttonTypeTwo = new ButtonType("Right");
+        ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo, buttonTypeCancel);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == buttonTypeOne){
+            return 2;
+        } else if (result.get() == buttonTypeTwo) {
+            return 3;
+        } else {
+            return 1;
+        }
+    }
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+
 
     static boolean quitConfirmationDialog() {
         return genericConfirmationDialog(null, "Are you sure you want to quit this program?");
+    }
+
+    static boolean deleteContentOfCatalogConfirmationDialog() {
+        return genericConfirmationDialog(
+                "Are you sure you want to delete content of catalog?",
+                "All stored graphs will be lost!");
     }
 
     static void aboutInformationDialog() {

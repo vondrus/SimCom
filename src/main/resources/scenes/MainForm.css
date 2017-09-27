@@ -23,6 +23,12 @@ TextFlow  { -fx-background-color: white;
 .iconImportDirectory > .label { -fx-graphic: url("../icons/iconImportDirectory.png"); }
 .iconImportDirectory > .accelerator-text { -fx-graphic: none; }
 
+.iconShowContent > .label { -fx-graphic: url("../icons/iconShowContent.png"); }
+.iconShowContent > .accelerator-text { -fx-graphic: none; }
+
+.iconDeleteContent > .label { -fx-graphic: url("../icons/iconDeleteContent.png"); }
+.iconDeleteContent > .accelerator-text { -fx-graphic: none; }
+
 .iconCompare > .label { -fx-graphic: url("../icons/iconCompare.png"); }
 .iconCompare > .accelerator-text { -fx-graphic: none; }
 
