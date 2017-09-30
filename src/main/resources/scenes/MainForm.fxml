@@ -44,7 +44,12 @@
             <Menu mnemonicParsing="false" text="Graph">
                 <MenuItem mnemonicParsing="false" onAction="#menuItemCompareGraphsOnAction" fx:id="menuItemCompareGraphs" styleClass="iconCompare" text="Compare graphs">
                     <accelerator>
-                        <KeyCodeCombination alt="DOWN" code="P" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                        <KeyCodeCombination alt="DOWN" code="C" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                    </accelerator>
+                </MenuItem>
+                <MenuItem mnemonicParsing="false" onAction="#menuItemSummaryOfComparisonsOnAction" fx:id="menuItemSummaryOfComparisons" styleClass="iconSummary" text="Make summary">
+                    <accelerator>
+                        <KeyCodeCombination alt="DOWN" code="M" control="UP" meta="UP" shift="UP" shortcut="UP" />
                     </accelerator>
                 </MenuItem>
             </Menu>

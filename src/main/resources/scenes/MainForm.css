@@ -32,5 +32,8 @@ TextFlow  { -fx-background-color: white;
 .iconCompare > .label { -fx-graphic: url("../icons/iconCompare.png"); }
 .iconCompare > .accelerator-text { -fx-graphic: none; }
 
+.iconSummary > .label { -fx-graphic: url("../icons/iconSummary.png"); }
+.iconSummary > .accelerator-text { -fx-graphic: none; }
+
 .iconAbout > .label { -fx-graphic: url("../icons/iconAbout.png"); }
 .iconAbout > .accelerator-text { -fx-graphic: none; }

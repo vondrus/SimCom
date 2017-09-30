@@ -164,13 +164,15 @@ public class MainFormController implements Initializable {
         if (catalogFile.exists()) {
             GraphCatalogPersistence catalogReader = new GraphCatalogPersistence();
             graphCatalog = catalogReader.readFromFile(catalogFile);
-            menuItemDeleteContentOfCatalog.setDisable(graphCatalog.size() == 0);
-            menuItemShowContentOfCatalog.setDisable(graphCatalog.size() == 0);
+            setDisableMenuItemDeleteContentOfCatalog(graphCatalog.size() == 0);
+            setDisableMenuItemShowContentOfCatalog(graphCatalog.size() == 0);
+            setDisableMenuItemSummaryOfComparisons(graphCatalog.size() == 0);
         }
         else {
             graphCatalog = new GraphCatalog();
-            menuItemDeleteContentOfCatalog.setDisable(true);
-            menuItemShowContentOfCatalog.setDisable(true);
+            setDisableMenuItemDeleteContentOfCatalog(true);
+            setDisableMenuItemShowContentOfCatalog(true);
+            setDisableMenuItemSummaryOfComparisons(true);
             console.println("Catalog file not found! Catalog will be empty.", console.TEXT_ATTR_ERROR);
             tabPane.getSelectionModel().select(consoleTab);
         }
@@ -269,8 +271,9 @@ public class MainFormController implements Initializable {
                 tabPane.getSelectionModel().select(consoleTab);
             }
         }
-        menuItemDeleteContentOfCatalog.setDisable(graphCatalog.size() == 0);
-        menuItemShowContentOfCatalog.setDisable(graphCatalog.size() == 0);
+        setDisableMenuItemDeleteContentOfCatalog(graphCatalog.size() == 0);
+        setDisableMenuItemShowContentOfCatalog(graphCatalog.size() == 0);
+        setDisableMenuItemSummaryOfComparisons(graphCatalog.size() == 0);
     }
 
     @FXML
@@ -305,12 +308,17 @@ public class MainFormController implements Initializable {
                 Dialogs.ioErrorDialog();
             }
         }
-        menuItemDeleteContentOfCatalog.setDisable(graphCatalog.size() == 0);
-        menuItemShowContentOfCatalog.setDisable(graphCatalog.size() == 0);
+        setDisableMenuItemDeleteContentOfCatalog(graphCatalog.size() == 0);
+        setDisableMenuItemShowContentOfCatalog(graphCatalog.size() == 0);
+        setDisableMenuItemSummaryOfComparisons(graphCatalog.size() == 0);
     }
 
     @FXML
     private MenuItem menuItemShowContentOfCatalog;
+
+    private void setDisableMenuItemShowContentOfCatalog(boolean disable) {
+        menuItemShowContentOfCatalog.setDisable(disable);
+    }
 
     @FXML
     private void menuItemShowContentOfCatalogOnAction() {
@@ -319,6 +327,10 @@ public class MainFormController implements Initializable {
 
     @FXML
     private MenuItem menuItemDeleteContentOfCatalog;
+
+    private void setDisableMenuItemDeleteContentOfCatalog(boolean disable) {
+        menuItemDeleteContentOfCatalog.setDisable(disable);
+    }
 
     @FXML
     private void menuItemDeleteContentOfCatalogOnAction() {
@@ -339,8 +351,9 @@ public class MainFormController implements Initializable {
 
             tabPane.getSelectionModel().select(consoleTab);
             console.println("Content of the catalog was successfully deleted.", console.TEXT_ATTR_NORMAL);
-            menuItemDeleteContentOfCatalog.setDisable(true);
-            menuItemShowContentOfCatalog.setDisable(true);
+            setDisableMenuItemDeleteContentOfCatalog(true);
+            setDisableMenuItemShowContentOfCatalog(true);
+            setDisableMenuItemSummaryOfComparisons(true);
         }
     }
 
@@ -413,6 +426,18 @@ public class MainFormController implements Initializable {
 
             Dialogs.missingGraphToCompareErrorDialog();
         }
+    }
+
+    @FXML
+    private MenuItem menuItemSummaryOfComparisons;
+
+    private void setDisableMenuItemSummaryOfComparisons(boolean disable) {
+        menuItemSummaryOfComparisons.setDisable(disable);
+    }
+
+    @FXML
+    private void menuItemSummaryOfComparisonsOnAction() {
+
     }
 
     @FXML
