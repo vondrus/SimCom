@@ -7,7 +7,7 @@
 <?import javafx.scene.control.*?>
 <?import simcom.Console?>
 
-<AnchorPane id="AnchorPane1" prefHeight="800.0" prefWidth="1200.0" stylesheets="/scenes/MainForm.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="simcom.MainFormController">
+<AnchorPane id="AnchorPane" fx:id="anchorPane" prefWidth="1200.0" prefHeight="800.0" stylesheets="/scenes/MainForm.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="simcom.MainFormController">
     <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 
         <MenuBar>
@@ -42,7 +42,7 @@
                 </MenuItem>
             </Menu>
             <Menu mnemonicParsing="false" text="Graph">
-                <MenuItem mnemonicParsing="false" onAction="#menuItemCompareGraphsOnAction" styleClass="iconCompare" text="Compare graphs">
+                <MenuItem mnemonicParsing="false" onAction="#menuItemCompareGraphsOnAction" fx:id="menuItemCompareGraphs" styleClass="iconCompare" text="Compare graphs">
                     <accelerator>
                         <KeyCodeCombination alt="DOWN" code="P" control="UP" meta="UP" shift="UP" shortcut="UP" />
                     </accelerator>

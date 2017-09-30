@@ -51,12 +51,12 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
-.gitignore
-
 .idea/.name
 .idea/compiler.xml
 .idea/misc.xml
 .idea/modules.xml
 .idea/vcs.xml
 
+.gitignore
+catalog.bin
 SimCom.iml

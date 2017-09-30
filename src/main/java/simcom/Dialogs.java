@@ -1,10 +1,10 @@
 package simcom;
 
-import javafx.application.Platform;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
+import javafx.application.Platform;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -160,10 +160,6 @@ class Dialogs {
                 "Copyright \u00a9 2017 Petr Vondrus\n"
                         + "CTU in Prague\n"
                         + "Faculty of Electrical Engineering");
-    }
-
-    static void catalogNotFoundWarningDialog() {
-        genericWarningDialog("Catalog file not found!", "Catalog will be empty.");
     }
 
     static void sameGraphInCatalogInformationDialog(String graphName) {

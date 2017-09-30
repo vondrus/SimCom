@@ -30,6 +30,9 @@ public class CatalogFormController implements Initializable {
         if ((leftGraph == null) || (! leftGraph.getName().equals(graph.getName()))) {
             mainFormController.setLeftGraph(graph);
             mainFormController.setLeftSideGraph(item);
+            if (mainFormController.getRightGraph() != null) {
+                mainFormController.setDisableMenuItemCompareGraphs(false);
+            }
             ((Stage)(((Button)event.getSource()).getScene().getWindow())).close();
         }
         else {
@@ -45,6 +48,9 @@ public class CatalogFormController implements Initializable {
         if ((rightGraph == null) || (! rightGraph.getName().equals(graph.getName()))) {
             mainFormController.setRightGraph(graph);
             mainFormController.setRightSideGraph(item);
+            if (mainFormController.getLeftGraph()!= null) {
+                mainFormController.setDisableMenuItemCompareGraphs(false);
+            }
             ((Stage)(((Button)event.getSource()).getScene().getWindow())).close();
         }
         else {

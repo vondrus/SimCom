@@ -6,10 +6,12 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.DirectoryChooser;
 import javafx.collections.ListChangeListener;
+import javafx.application.Platform;
 
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -31,6 +33,9 @@ public class MainFormController implements Initializable {
     private File catalogFile;
 
     private String lastOpenDirectory;
+
+    @FXML
+    private AnchorPane anchorPane;
 
     @FXML
     private TabPane tabPane;
@@ -68,7 +73,7 @@ public class MainFormController implements Initializable {
     @FXML
     private void menuItemQuitOnAction() {
         if (Dialogs.quitConfirmationDialog())
-            System.exit(0);
+            Platform.exit();
     }
 
     @FXML
@@ -154,7 +159,7 @@ public class MainFormController implements Initializable {
         return "Name: " + name + ", vertices: " + vertices + ", edges: " + edges + ", levels: " + levels;
     }
 
-    void checkCatalogFile() {
+    private void checkCatalogFile() {
         catalogFile = new File(GlobalConstants.CATALOG_FILE_PATH);
         if (catalogFile.exists()) {
             GraphCatalogPersistence catalogReader = new GraphCatalogPersistence();
@@ -163,10 +168,11 @@ public class MainFormController implements Initializable {
             menuItemShowContentOfCatalog.setDisable(graphCatalog.size() == 0);
         }
         else {
-            Dialogs.catalogNotFoundWarningDialog();
             graphCatalog = new GraphCatalog();
             menuItemDeleteContentOfCatalog.setDisable(true);
             menuItemShowContentOfCatalog.setDisable(true);
+            console.println("Catalog file not found! Catalog will be empty.", console.TEXT_ATTR_ERROR);
+            tabPane.getSelectionModel().select(consoleTab);
         }
     }
 
@@ -255,7 +261,7 @@ public class MainFormController implements Initializable {
             fileChooser.setInitialDirectory(new File(lastOpenDirectory));
         }
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("DOT Files", "*.dot", "*.gv"));
-        File selectedFile = fileChooser.showOpenDialog(leftStackPane.getScene().getWindow());
+        File selectedFile = fileChooser.showOpenDialog(anchorPane.getScene().getWindow());
         if (selectedFile != null) {
             String absPath = selectedFile.getAbsolutePath();
             lastOpenDirectory = absPath.substring(0, absPath.lastIndexOf(File.separator));
@@ -276,7 +282,7 @@ public class MainFormController implements Initializable {
         } else {
             directoryChooser.setInitialDirectory(new File(lastOpenDirectory));
         }
-        final File selectedDirectory = directoryChooser.showDialog(leftStackPane.getScene().getWindow());
+        final File selectedDirectory = directoryChooser.showDialog(anchorPane.getScene().getWindow());
         if (selectedDirectory != null) {
             lastOpenDirectory = selectedDirectory.getAbsolutePath();
             final FileNameExtensionFilter extensionFilter = new FileNameExtensionFilter("DOT files", "dot", "DOT");
@@ -369,6 +375,13 @@ public class MainFormController implements Initializable {
     }
 
     @FXML
+    private MenuItem menuItemCompareGraphs;
+
+    void setDisableMenuItemCompareGraphs(boolean disable) {
+        menuItemCompareGraphs.setDisable(disable);
+    }
+
+    @FXML
     private void menuItemCompareGraphsOnAction() {
         if ((leftGraph != null) && (rightGraph != null)) {
             // Get focus to console tab.
@@ -405,15 +418,19 @@ public class MainFormController implements Initializable {
     @FXML
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        setLeftSideGraph(null);
-        setRightSideGraph(null);
-
         console.getChildren().addListener((ListChangeListener<Node>)
                 ((change) -> {
                     console.layout();
                     scrollPane.layout();
                     scrollPane.setVvalue(1.0f);
                 }));
+
+        setLeftSideGraph(null);
+        setRightSideGraph(null);
+
+        checkCatalogFile();
+
+        setDisableMenuItemCompareGraphs(true);
 
         console.println("Ready.", console.TEXT_ATTR_NORMAL);
     }
