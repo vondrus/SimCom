@@ -203,9 +203,9 @@ public class MainFormController implements Initializable {
         CustomGraph graph = GraphUtils.loadGraphFromDotFile(file);
         if (graph != null) {
             String graphFilename = file.getName();
-            if (GraphUtils.evaluateGraph(graph)) {
+            if (graph.evaluate()) {
                 try {
-                    Image image = GraphUtils.createGraphImage(graph);
+                    Image image = graph.getImage();
                     if (image != null) {
                         int indexOf = graphCatalog.indexOf(graph);
                         if (indexOf == -1) {

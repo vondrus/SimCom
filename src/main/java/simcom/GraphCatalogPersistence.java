@@ -45,7 +45,7 @@ class GraphCatalogPersistence {
             while (true)
                 try {
                     CustomGraph graph = (CustomGraph) objectInputStream.readObject();
-                    graphCatalog.add(new GraphCatalogItem(graph, GraphUtils.createGraphImage(graph)));
+                    graphCatalog.add(new GraphCatalogItem(graph, graph.getImage()));
                 } catch (EOFException e) {
                     break;
                 }

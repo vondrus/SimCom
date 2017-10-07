@@ -1,6 +1,9 @@
 package simcom;
 
+import java.io.*;
 import java.util.*;
+
+import javafx.scene.image.Image;
 
 import com.google.common.hash.Hashing;
 import com.google.common.hash.HashFunction;
@@ -28,22 +31,6 @@ class CustomGraph extends SimpleDirectedGraph<CustomGraphVertex, CustomGraphEdge
         return verticesLevels;
     }
 
-    void initAttributes() {
-        this.verticesLevels = 0;
-        for (CustomGraphVertex vertex: this.vertexSet()) {
-            vertex.setStatus(CustomGraphVertex.Status.FRESH);
-        }
-    }
-
-    List<CustomGraphVertex> getVertexSuccessors(CustomGraphVertex vertex) {
-        ArrayList<CustomGraphVertex> successors = new ArrayList<>();
-        Set<CustomGraphEdge> outgoingEdges = this.outgoingEdgesOf(vertex);
-        for (CustomGraphEdge edge : outgoingEdges) {
-            successors.add(this.getEdgeTarget(edge));
-        }
-        return successors;
-    }
-
     private int getMaxLevelOfVertices() {
         int maxLevel = 0;
         for (CustomGraphVertex vertex : this.vertexSet()) {
@@ -54,9 +41,87 @@ class CustomGraph extends SimpleDirectedGraph<CustomGraphVertex, CustomGraphEdge
         return maxLevel;
     }
 
-    void updateMaxLevelOfVertices() {
+/* ------------------------------------------------------------------------------------------------------------------ */
+
+    Image getImage() throws IOException {
+        final ProcessBuilder builder = new ProcessBuilder(GlobalConstants.DOT_EXEC_FILE_PATH, "-Tpng");
+        final Process process = builder.start();
+        final Image[] image = new Image[1];
+
+        Thread thread = new Thread(() -> {
+            final InputStream inputStream = process.getInputStream();
+            image[0] = new Image(inputStream);
+        });
+        thread.start();
+
+        OutputStream outStream = process.getOutputStream();
+        PrintWriter pWriter = new PrintWriter(outStream);
+
+        pWriter.println("digraph name {\n\tratio=compress;\n\tnode [shape=circle, style=filled, fillcolor=\"lightgray\", fontcolor=\"black\"];\n");
+
+        for (CustomGraphEdge edge : this.edgeSet()) {
+            pWriter.println(this.getEdgeSource(edge) + " -> " + this.getEdgeTarget(edge) + ";\n");
+        }
+
+        pWriter.println('}');
+        pWriter.flush();
+        pWriter.close();
+
+        try {
+            thread.join();
+            return image[0];
+        } catch (InterruptedException e) {
+            Dialogs.exceptionDialog(e);
+            return null;
+        }
+    }
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+
+    private void initAttributes() {
+        this.verticesLevels = 0;
+        for (CustomGraphVertex vertex: this.vertexSet()) {
+            vertex.setStatus(CustomGraphVertex.Status.FRESH);
+        }
+    }
+
+    private void updateMaxLevelOfVertices() {
         this.verticesLevels = this.getMaxLevelOfVertices();
     }
+
+    private List<CustomGraphVertex> getVertexSuccessors(CustomGraphVertex vertex) {
+        ArrayList<CustomGraphVertex> successors = new ArrayList<>();
+        Set<CustomGraphEdge> outgoingEdges = this.outgoingEdgesOf(vertex);
+        for (CustomGraphEdge edge : outgoingEdges) {
+            successors.add(this.getEdgeTarget(edge));
+        }
+        return successors;
+    }
+
+    private void depthFirstSearch(CustomGraphVertex vertex, int level) {
+        vertex.setStatus(CustomGraphVertex.Status.OPEN);
+        vertex.setLevel(level);
+        level++;
+        for (CustomGraphVertex successor : this.getVertexSuccessors(vertex))
+            if (successor.getStatus() == CustomGraphVertex.Status.FRESH)
+                depthFirstSearch(successor, level);
+        vertex.setStatus(CustomGraphVertex.Status.CLOSED);
+    }
+
+    boolean evaluate() {
+        this.initAttributes();
+        int components = 0;
+        for (CustomGraphVertex vertex : this.vertexSet()) {
+            if (vertex.getStatus() == CustomGraphVertex.Status.FRESH) {
+                depthFirstSearch(vertex, 0);
+                components++;
+            }
+        }
+        this.updateMaxLevelOfVertices();
+        return components == 1;
+    }
+
+/* ------------------------------------------------------------------------------------------------------------------ */
 
     private Set<CustomHash> getVertexHash(CustomGraphVertex vertex) {
         final int indegree = this.inDegreeOf(vertex);
