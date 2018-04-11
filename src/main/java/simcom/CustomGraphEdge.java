@@ -3,6 +3,7 @@ package simcom;
 import org.jgrapht.graph.DefaultEdge;
 
 
+@SuppressWarnings("unused") public
 class CustomGraphEdge extends DefaultEdge {
     private static final long serialVersionUID = 1467254477829189996L;
     private String label;

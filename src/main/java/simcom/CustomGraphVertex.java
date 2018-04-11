@@ -9,20 +9,14 @@ class CustomGraphVertex implements Serializable {
 
     private String label;
     private Status status;
-    private int level;
 
     CustomGraphVertex(String label) {
         this.label = label;
         this.status = Status.FRESH;
-        this.level = 0;
     }
 
     String getLabel() {
         return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
     }
 
     Status getStatus() {
@@ -33,37 +27,35 @@ class CustomGraphVertex implements Serializable {
         this.status = status;
     }
 
-    int getLevel() {
-        return level;
-    }
-
-    void setLevel(int level) {
-        this.level = level;
-    }
-
     public int hashCode() {
-        if (label == null)
+        if (label == null) {
             return 0;
-        else
+        }
+        else {
             return label.hashCode();
+        }
     }
 
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
+
         if (obj == null) {
             return false;
         }
+
         if (!(obj instanceof CustomGraphVertex)) {
             return false;
         }
 
         CustomGraphVertex vertex = (CustomGraphVertex) obj;
-        if (label == null)
+        if (label == null) {
             return vertex.label == null;
-        else
+        }
+        else {
             return label.equals(vertex.label);
+        }
     }
 
     @Override

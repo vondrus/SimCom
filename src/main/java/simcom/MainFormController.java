@@ -12,13 +12,11 @@ import javafx.stage.FileChooser;
 import javafx.stage.DirectoryChooser;
 import javafx.collections.ListChangeListener;
 import javafx.application.Platform;
-
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Set;
 import java.util.ResourceBundle;
 
 
@@ -155,8 +153,8 @@ public class MainFormController implements Initializable {
         String name = graph.getName();
         int vertices = graph.vertexSet().size();
         int edges = graph.edgeSet().size();
-        int levels = graph.getVerticesLevels();
-        return "Name: " + name + ", vertices: " + vertices + ", edges: " + edges + ", levels: " + levels;
+        int depth = graph.getDepth();
+        return "Name: " + name + ", vertices: " + vertices + ", edges: " + edges + ", depth: " + depth;
     }
 
     private void checkCatalogFile() {
@@ -203,7 +201,8 @@ public class MainFormController implements Initializable {
         CustomGraph graph = GraphUtils.loadGraphFromDotFile(file);
         if (graph != null) {
             String graphFilename = file.getName();
-            if (graph.evaluate()) {
+            graph.createHierarchicalStructure();
+            if (graph.getComponentCount() == 1) {
                 try {
                     Image image = graph.getImage();
                     if (image != null) {
@@ -356,7 +355,7 @@ public class MainFormController implements Initializable {
             setDisableMenuItemSummaryOfComparisons(true);
         }
     }
-
+/*
     private void evaluateSimilarity(Set<CustomHash> simhash1, Set<CustomHash> simhash2) {
         long congruence = 0;
 
@@ -386,7 +385,7 @@ public class MainFormController implements Initializable {
             console.println();
         }
     }
-
+*/
     @FXML
     private MenuItem menuItemCompareGraphs;
 
@@ -397,9 +396,15 @@ public class MainFormController implements Initializable {
     @FXML
     private void menuItemCompareGraphsOnAction() {
         if ((leftGraph != null) && (rightGraph != null)) {
+
             // Get focus to console tab.
             tabPane.getSelectionModel().select(consoleTab);
 
+            SimilarityMeasure2 similarityMeasure2 = new SimilarityMeasure2(leftGraph, rightGraph);
+            similarityMeasure2.prepareSimHashTables();
+            console.println(similarityMeasure2.getResultString(), console.TEXT_ATTR_RESULT);
+
+/*
             console.println();
 
             console.println("Left graph (" + leftGraph.getName() + ") simhash", console.TEXT_ATTR_RESULT);
@@ -419,6 +424,7 @@ public class MainFormController implements Initializable {
             console.println();
 
             evaluateSimilarity(leftGraphSimhash, rightGraphSimhash);
+*/
         }
         else {
             // Get focus to graphs tab.
@@ -437,7 +443,13 @@ public class MainFormController implements Initializable {
 
     @FXML
     private void menuItemSummaryOfComparisonsOnAction() {
+        // Get focus to console tab.
+        tabPane.getSelectionModel().select(consoleTab);
 
+        // Todo: Complete code
+        System.out.println("Hierarchical structure:");
+        this.getLeftGraph().printHierarchicalStructure();
+        System.out.println();
     }
 
     @FXML
