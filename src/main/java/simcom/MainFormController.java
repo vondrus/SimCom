@@ -198,7 +198,7 @@ public class MainFormController implements Initializable {
 
     private boolean importGraphFromFile(File file, boolean consoleMode) {
         boolean rv = false;
-        CustomGraph graph = GraphUtils.loadGraphFromDotFile(file);
+        CustomGraph graph = GraphUtility.loadGraphFromDotFile(file);
         if (graph != null) {
             String graphFilename = file.getName();
             graph.createHierarchicalStructure();
@@ -355,37 +355,7 @@ public class MainFormController implements Initializable {
             setDisableMenuItemSummaryOfComparisons(true);
         }
     }
-/*
-    private void evaluateSimilarity(Set<CustomHash> simhash1, Set<CustomHash> simhash2) {
-        long congruence = 0;
 
-        for (CustomHash hash1 : simhash1) {
-            console.println(hash1.getName(), console.TEXT_ATTR_RESULT);
-
-            for (CustomHash hash2 : simhash2) {
-                if (hash2.getName().equals(hash1.getName())) {
-                    congruence = hash1.getHash() ^ hash2.getHash();
-                    console.println("\tCongruence (" + Integer.toString(hash1.getLength()) + "bit): "
-                            + Long.toBinaryString(congruence), console.TEXT_ATTR_RESULT);
-                    break;
-                }
-            }
-
-            int hammingDistance = 0;
-            long mask = 1;
-            for (int i = 0; i < hash1.getLength(); i++) {
-                if ((congruence & mask) != 0)
-                    hammingDistance++;
-                mask = mask << 1;
-            }
-
-            console.println("\tHamming distance (" + Integer.toString(hash1.getLength()) + "bit): "
-                    + Long.toString(hammingDistance), console.TEXT_ATTR_RESULT);
-            console.println("\tSimilarity: " + (1 - (hammingDistance / (float) hash1.getLength())), console.TEXT_ATTR_RESULT);
-            console.println();
-        }
-    }
-*/
     @FXML
     private MenuItem menuItemCompareGraphs;
 
@@ -397,34 +367,16 @@ public class MainFormController implements Initializable {
     private void menuItemCompareGraphsOnAction() {
         if ((leftGraph != null) && (rightGraph != null)) {
 
-            // Get focus to console tab.
+            // Get focus to console tab
             tabPane.getSelectionModel().select(consoleTab);
 
+            // Calculate simhashes and evaluate similarity
             SimilarityMeasure2 similarityMeasure2 = new SimilarityMeasure2(leftGraph, rightGraph);
-            similarityMeasure2.prepareSimHashTables();
+            similarityMeasure2.makeSimHashTables();
+            similarityMeasure2.evaluateSimilarity();
+
+            // Show results
             console.println(similarityMeasure2.getResultString(), console.TEXT_ATTR_RESULT);
-
-/*
-            console.println();
-
-            console.println("Left graph (" + leftGraph.getName() + ") simhash", console.TEXT_ATTR_RESULT);
-            final Set<CustomHash> leftGraphSimhash = leftGraph.getSimhash();
-            for (CustomHash hash : leftGraphSimhash) {
-                console.println('\t' + hash.getName() + " (" + hash.getLength() + "bit): " + Long.toBinaryString(hash.getHash())
-                        + ", " + Long.toHexString(hash.getHash()), console.TEXT_ATTR_RESULT);
-            }
-            console.println();
-
-            console.println("Right graph (" + rightGraph.getName() + ") simhash", console.TEXT_ATTR_RESULT);
-            final Set<CustomHash> rightGraphSimhash = rightGraph.getSimhash();
-            for (CustomHash hash : rightGraphSimhash) {
-                console.println('\t' + hash.getName() + " (" + hash.getLength() + "bit): " + Long.toBinaryString(hash.getHash())
-                        + ", " + Long.toHexString(hash.getHash()), console.TEXT_ATTR_RESULT);
-            }
-            console.println();
-
-            evaluateSimilarity(leftGraphSimhash, rightGraphSimhash);
-*/
         }
         else {
             // Get focus to graphs tab.

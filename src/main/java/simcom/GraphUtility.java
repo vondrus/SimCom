@@ -5,7 +5,7 @@ import org.jgrapht.ext.*;
 import java.io.File;
 
 
-class GraphUtils {
+class GraphUtility {
 
     private static GraphImporter<CustomGraphVertex, CustomGraphEdge> createImporter() {
         VertexProvider<CustomGraphVertex> vertexProvider

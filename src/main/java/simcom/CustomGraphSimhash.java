@@ -80,6 +80,10 @@ class CustomGraphSimhash {
         System.out.println("          (LE): 0b" + AuxiliaryUtility.ByteArrayAsBinLittleEndian(simhash));
     }
 
+    byte[] getSimhashAsBytes() {
+        return simhash;
+    }
+
     String getSimhashAsHexString() {
         return AuxiliaryUtility.ByteArrayAsHexLittleEndian(simhash);
     }

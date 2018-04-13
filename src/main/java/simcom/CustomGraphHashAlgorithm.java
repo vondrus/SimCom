@@ -6,9 +6,11 @@ import com.google.common.hash.HashFunction;
 
 public enum CustomGraphHashAlgorithm {
 
-    //MURMUR("Murmur3A", Hashing.murmur3_32());
-    SIPHASH("SipHash-2-4", Hashing.sipHash24());
-    // FARMHASH("FarmHash's Fingerprint64", Hashing.farmHashFingerprint64());
+    MURMUR("Murmur3A", Hashing.murmur3_32()),
+    SIPHASH("SipHash-2-4", Hashing.sipHash24()),
+    FARMHASH("FarmHash's Fingerprint64", Hashing.farmHashFingerprint64()),
+    MD5("MD5", Hashing.md5()),
+    SHA256("SHA-256", Hashing.sha256());
 
     private String name;
     private HashFunction hashFunction;
