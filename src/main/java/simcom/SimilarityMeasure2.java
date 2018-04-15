@@ -9,7 +9,7 @@ class SimilarityMeasure2 {
     // Inner class for storing results of evaluation
     private class EvaluationResult {
         private int hammingDistance;
-        private float similarity;
+        private double similarity;
 
         int getHammingDistance() {
             return hammingDistance;
@@ -19,37 +19,37 @@ class SimilarityMeasure2 {
             this.hammingDistance = hammingDistance;
         }
 
-        float getSimilarity() {
+        double getSimilarity() {
             return similarity;
         }
 
-        void setSimilarity(float similarity) {
+        void setSimilarity(double similarity) {
             this.similarity = similarity;
         }
     }
 
     private CustomGraph graph1;
     private CustomGraph graph2;
-    private Hashtable<CustomGraphHashAlgorithm, CustomGraphSimhash> simhashTable1 = new Hashtable<>();
-    private Hashtable<CustomGraphHashAlgorithm, CustomGraphSimhash> simhashTable2 = new Hashtable<>();
-    private Hashtable<CustomGraphHashAlgorithm, EvaluationResult> evaluationResults = new Hashtable<>();
+    private Hashtable<SimilarityMeasure2HashAlgorithm, SimilarityMeasure2Simhash> simhashTable1 = new Hashtable<>();
+    private Hashtable<SimilarityMeasure2HashAlgorithm, SimilarityMeasure2Simhash> simhashTable2 = new Hashtable<>();
+    private Hashtable<SimilarityMeasure2HashAlgorithm, EvaluationResult> evaluationResults = new Hashtable<>();
 
     SimilarityMeasure2(CustomGraph graph1, CustomGraph graph2) {
         this.graph1 = graph1;
         this.graph2 = graph2;
 
-        for (CustomGraphHashAlgorithm hashAlgorithm : CustomGraphHashAlgorithm.values()) {
-            simhashTable1.put(hashAlgorithm, new CustomGraphSimhash(hashAlgorithm.getHashFunction()));
-            simhashTable2.put(hashAlgorithm, new CustomGraphSimhash(hashAlgorithm.getHashFunction()));
+        for (SimilarityMeasure2HashAlgorithm hashAlgorithm : SimilarityMeasure2HashAlgorithm.values()) {
+            simhashTable1.put(hashAlgorithm, new SimilarityMeasure2Simhash(hashAlgorithm.getHashFunction()));
+            simhashTable2.put(hashAlgorithm, new SimilarityMeasure2Simhash(hashAlgorithm.getHashFunction()));
             evaluationResults.put(hashAlgorithm, new EvaluationResult());
         }
     }
 
-    private void makeSimHashTable(CustomGraph graph, Hashtable<CustomGraphHashAlgorithm, CustomGraphSimhash> simhashTable) {
+    private void makeSimHashTable(CustomGraph graph, Hashtable<SimilarityMeasure2HashAlgorithm, SimilarityMeasure2Simhash> simhashTable) {
         int levelNumber = 0;
 
         // Decompose graph to the tokens and calculate their hashes
-        for (ArrayList<CustomGraphVertex> level : graph.getLevels()) {
+        for (ArrayList<CustomGraphVertex> level : graph) {
 
             // Vertices
             for (CustomGraphVertex vertex : level) {
@@ -58,14 +58,14 @@ class SimilarityMeasure2 {
                 final int outdegree = graph.outDegreeOf(vertex);
                 final String label = vertex.getLabel();
 
-                for (CustomGraphHashAlgorithm hashAlgorithm : CustomGraphHashAlgorithm.values()) {
+                for (SimilarityMeasure2HashAlgorithm hashAlgorithm : SimilarityMeasure2HashAlgorithm.values()) {
                     simhashTable.get(hashAlgorithm).putVertex(indegree, outdegree, label, levelNumber);
                 }
 
             }
 
             // End of levels
-            for (CustomGraphHashAlgorithm hashAlgorithm : CustomGraphHashAlgorithm.values()) {
+            for (SimilarityMeasure2HashAlgorithm hashAlgorithm : SimilarityMeasure2HashAlgorithm.values()) {
                 simhashTable.get(hashAlgorithm).putLevelSeparator(levelNumber, level.size());
             }
 
@@ -73,17 +73,13 @@ class SimilarityMeasure2 {
         }
 
         // Make simhashes from already prepared hashes
-        for (CustomGraphHashAlgorithm hashAlgorithm : CustomGraphHashAlgorithm.values()) {
+        for (SimilarityMeasure2HashAlgorithm hashAlgorithm : SimilarityMeasure2HashAlgorithm.values()) {
             simhashTable.get(hashAlgorithm).makeSimhash();
         }
 
         // Debug
         System.out.println();
-    }
 
-    void makeSimHashTables() {
-        makeSimHashTable(graph1, simhashTable1);
-        makeSimHashTable(graph2, simhashTable2);
     }
 
     private int calculateHammingDistance(byte[] simhash1, byte[] simhash2) {
@@ -104,20 +100,22 @@ class SimilarityMeasure2 {
     }
 
     void evaluateSimilarity() {
+        makeSimHashTable(graph1, simhashTable1);
+        makeSimHashTable(graph2, simhashTable2);
 
-        for (CustomGraphHashAlgorithm hashAlgorithm : CustomGraphHashAlgorithm.values()) {
+        for (SimilarityMeasure2HashAlgorithm hashAlgorithm : SimilarityMeasure2HashAlgorithm.values()) {
             int hammingDistance = calculateHammingDistance(
                     simhashTable1.get(hashAlgorithm).getSimhashAsBytes(),
                     simhashTable2.get(hashAlgorithm).getSimhashAsBytes()
             );
             evaluationResults.get(hashAlgorithm).setHammingDistance(hammingDistance);
-            evaluationResults.get(hashAlgorithm).setSimilarity(1 - (hammingDistance / (float) simhashTable1.get(hashAlgorithm).getSimhashLength()));
+            evaluationResults.get(hashAlgorithm).setSimilarity(1 - (hammingDistance / (double) simhashTable1.get(hashAlgorithm).getSimhashLength()));
         }
     }
 
     String getResultString() {
         String rv = "";
-        for (CustomGraphHashAlgorithm hashAlgorithm : CustomGraphHashAlgorithm.values()) {
+        for (SimilarityMeasure2HashAlgorithm hashAlgorithm : SimilarityMeasure2HashAlgorithm.values()) {
             rv = rv.concat(String.format(
                             "%nHash algorithm: %s (%s-bit)%n" +
                             "     Left graph (%s) simhash = 0x%s%n" +

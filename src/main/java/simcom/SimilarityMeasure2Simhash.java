@@ -5,13 +5,13 @@ import com.google.common.hash.HashFunction;
 import java.util.Arrays;
 
 
-class CustomGraphSimhash {
+class SimilarityMeasure2Simhash {
     private HashFunction hashFunction;
     private int simhashLength;
     private int[] vector;
     private byte[] simhash;
 
-    CustomGraphSimhash(HashFunction hashFunction) {
+    SimilarityMeasure2Simhash(HashFunction hashFunction) {
         this.hashFunction = hashFunction;
         this.simhashLength = hashFunction.newHasher().putInt(0).hash().bits();
         this.vector = new int[simhashLength];

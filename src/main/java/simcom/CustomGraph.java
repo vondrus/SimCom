@@ -3,26 +3,29 @@ package simcom;
 import java.io.*;
 import java.util.*;
 
+import javax.annotation.Nonnull;
+
 import javafx.scene.image.Image;
 
-import org.jgrapht.graph.ClassBasedEdgeFactory;
 import org.jgrapht.graph.SimpleDirectedGraph;
+import org.jgrapht.graph.ClassBasedEdgeFactory;
 
 
-class CustomGraph extends SimpleDirectedGraph<CustomGraphVertex, CustomGraphEdge> {
+class CustomGraph extends SimpleDirectedGraph<CustomGraphVertex, CustomGraphEdge> implements Iterable<CustomGraphLevel> {
     private static final long serialVersionUID = 160210295726081101L;
-    private ArrayList<ArrayList<CustomGraphVertex>> levels;
+    private List<CustomGraphLevel> levels = new ArrayList<>();
     private String name;
     private int componentCount;
 
     CustomGraph(Class<? extends CustomGraphEdge> edgeClass, String name) {
         super(new ClassBasedEdgeFactory<>(edgeClass));
-        this.levels = new ArrayList<>();
         this.name = name;
     }
 
-    ArrayList<ArrayList<CustomGraphVertex>> getLevels() {
-        return levels;
+    @Override
+    @Nonnull
+    public Iterator<CustomGraphLevel> iterator() {
+        return Collections.unmodifiableList(levels).iterator();
     }
 
     String getName() {
@@ -37,8 +40,6 @@ class CustomGraph extends SimpleDirectedGraph<CustomGraphVertex, CustomGraphEdge
         return levels.size();
     }
 
-/* ------------------------------------------------------------------------------------------------------------------ */
-
     Image getImage() throws IOException {
         final ProcessBuilder builder = new ProcessBuilder(GlobalConstants.DOT_EXEC_FILE_PATH, "-Tpng");
         final Process process = builder.start();
@@ -52,7 +53,7 @@ class CustomGraph extends SimpleDirectedGraph<CustomGraphVertex, CustomGraphEdge
 
         OutputStream outStream = process.getOutputStream();
         PrintWriter pWriter = new PrintWriter(outStream);
-
+        // TODO: Refactor (platform dependent newlines)
         pWriter.println("digraph name {\n\tratio=compress;\n\tnode [shape=circle, style=filled, fillcolor=\"lightgray\", fontcolor=\"black\"];\n");
 
         for (CustomGraphEdge edge : this.edgeSet()) {
@@ -72,8 +73,6 @@ class CustomGraph extends SimpleDirectedGraph<CustomGraphVertex, CustomGraphEdge
         }
     }
 
-/* ------------------------------------------------------------------------------------------------------------------ */
-
     private List<CustomGraphVertex> getVertexSuccessors(CustomGraphVertex vertex) {
         ArrayList<CustomGraphVertex> successors = new ArrayList<>();
         Set<CustomGraphEdge> outgoingEdges = this.outgoingEdgesOf(vertex);
@@ -88,15 +87,15 @@ class CustomGraph extends SimpleDirectedGraph<CustomGraphVertex, CustomGraphEdge
         vertex.setStatus(CustomGraphVertex.Status.OPEN);
 
         // If necessary add new level to the hierarchy
-        if (this.levels.size() < level + 1) {
-            this.levels.add(new ArrayList<>());
+        if (levels.size() < level + 1) {
+            levels.add(new CustomGraphLevel());
         }
 
         // Add the vertex to the appropriate level
-        this.levels.get(level).add(vertex);
+        levels.get(level).add(vertex);
 
         level++;
-        for (CustomGraphVertex successor : this.getVertexSuccessors(vertex))
+        for (CustomGraphVertex successor : getVertexSuccessors(vertex))
             if (successor.getStatus() == CustomGraphVertex.Status.FRESH)
                 depthFirstSearch(successor, level);
         vertex.setStatus(CustomGraphVertex.Status.CLOSED);
@@ -106,17 +105,8 @@ class CustomGraph extends SimpleDirectedGraph<CustomGraphVertex, CustomGraphEdge
         for (CustomGraphVertex vertex : this.vertexSet()) {
             if (vertex.getStatus() == CustomGraphVertex.Status.FRESH) {
                 depthFirstSearch(vertex, 0);
-                this.componentCount++;
+                componentCount++;
             }
-        }
-    }
-
-    void printHierarchicalStructure() {
-        for (ArrayList<CustomGraphVertex> level : levels) {
-            for (CustomGraphVertex vertex : level) {
-                System.out.print(vertex.getLabel() + ",");
-            }
-            System.out.println();
         }
     }
 

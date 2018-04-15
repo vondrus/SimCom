@@ -370,12 +370,15 @@ public class MainFormController implements Initializable {
             // Get focus to console tab
             tabPane.getSelectionModel().select(consoleTab);
 
-            // Calculate simhashes and evaluate similarity
+            // Method 1 - Evaluate similarity
+            SimilarityMeasure1 similarityMeasure1 = new SimilarityMeasure1(leftGraph, rightGraph);
+            similarityMeasure1.evaluateSimilarity();
+
+            // Method 2 - Calculate simhashes and evaluate similarity
             SimilarityMeasure2 similarityMeasure2 = new SimilarityMeasure2(leftGraph, rightGraph);
-            similarityMeasure2.makeSimHashTables();
             similarityMeasure2.evaluateSimilarity();
 
-            // Show results
+            // Method 2 - Show results
             console.println(similarityMeasure2.getResultString(), console.TEXT_ATTR_RESULT);
         }
         else {
@@ -398,10 +401,7 @@ public class MainFormController implements Initializable {
         // Get focus to console tab.
         tabPane.getSelectionModel().select(consoleTab);
 
-        // Todo: Complete code
-        System.out.println("Hierarchical structure:");
-        this.getLeftGraph().printHierarchicalStructure();
-        System.out.println();
+        // Todo: Complete the code
     }
 
     @FXML
