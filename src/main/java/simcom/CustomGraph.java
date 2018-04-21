@@ -40,6 +40,14 @@ class CustomGraph extends SimpleDirectedGraph<CustomGraphVertex, CustomGraphEdge
         return levels.size();
     }
 
+    CustomGraphLevel getLevel(int levelNumber) {
+        if (levelNumber < getDepth()) {
+            return levels.get(levelNumber);
+        } else {
+            return null;
+        }
+    }
+
     Image getImage() throws IOException {
         final ProcessBuilder builder = new ProcessBuilder(GlobalConstants.DOT_EXEC_FILE_PATH, "-Tpng");
         final Process process = builder.start();
