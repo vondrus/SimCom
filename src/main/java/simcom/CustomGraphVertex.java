@@ -3,7 +3,7 @@ package simcom;
 import java.io.Serializable;
 
 
-class CustomGraphVertex implements Serializable {
+public class CustomGraphVertex implements Serializable {
     private static final long serialVersionUID = 6690978526162487994L;
     public enum Status { FRESH, OPEN, CLOSED }
 
@@ -15,7 +15,7 @@ class CustomGraphVertex implements Serializable {
         this.status = Status.FRESH;
     }
 
-    String getLabel() {
+    public String getLabel() {
         return label;
     }
 

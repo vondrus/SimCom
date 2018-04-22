@@ -1,9 +1,18 @@
 package simcom;
 
 
-class AuxiliaryUtility {
+public class AuxiliaryUtility {
+    private static boolean debugMode = true;
 
-    static String ByteArrayAsBinLittleEndian (byte[] a) {
+    public static boolean isDebugMode() {
+        return debugMode;
+    }
+
+    public static void setDebugMode(boolean debugMode) {
+        AuxiliaryUtility.debugMode = debugMode;
+    }
+
+    public static String ByteArrayAsBinLittleEndian (byte[] a) {
         StringBuilder rv = new StringBuilder();
 
         if (a.length > 0) {
@@ -33,7 +42,7 @@ class AuxiliaryUtility {
         }
     }
 
-    static String ByteArrayAsHexBigEndian (byte[] a) {
+    public static String ByteArrayAsHexBigEndian (byte[] a) {
         StringBuilder rv = new StringBuilder();
 
         if (a.length > 0) {
@@ -46,7 +55,7 @@ class AuxiliaryUtility {
         }
     }
 
-    static String ByteArrayAsHexLittleEndian (byte[] a) {
+    public static String ByteArrayAsHexLittleEndian (byte[] a) {
         StringBuilder rv = new StringBuilder();
 
         if (a.length > 0) {

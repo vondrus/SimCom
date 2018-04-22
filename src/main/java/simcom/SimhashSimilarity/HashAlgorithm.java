@@ -1,10 +1,10 @@
-package simcom;
+package simcom.SimhashSimilarity;
 
 import com.google.common.hash.Hashing;
 import com.google.common.hash.HashFunction;
 
 
-public enum SimilarityMeasure2HashAlgorithm {
+public enum HashAlgorithm {
 
     // Here is the only place to insert additional hash algorithm.
     MURMUR("Murmur3A", Hashing.murmur3_32()),
@@ -18,7 +18,7 @@ public enum SimilarityMeasure2HashAlgorithm {
     private String name;
     private HashFunction hashFunction;
 
-    SimilarityMeasure2HashAlgorithm(String name, HashFunction hashFunction) {
+    HashAlgorithm(String name, HashFunction hashFunction) {
         this.name = name;
         this.hashFunction = hashFunction;
     }

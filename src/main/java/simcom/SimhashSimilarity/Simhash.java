@@ -1,17 +1,19 @@
-package simcom;
-
-import com.google.common.hash.HashFunction;
+package simcom.SimhashSimilarity;
 
 import java.util.Arrays;
 
+import com.google.common.hash.HashFunction;
 
-class SimilarityMeasure2Simhash {
+import simcom.AuxiliaryUtility;
+
+
+class Simhash {
     private HashFunction hashFunction;
     private int simhashLength;
     private int[] vector;
     private byte[] simhash;
 
-    SimilarityMeasure2Simhash(HashFunction hashFunction) {
+    Simhash(HashFunction hashFunction) {
         this.hashFunction = hashFunction;
         this.simhashLength = hashFunction.newHasher().putInt(0).hash().bits();
         this.vector = new int[simhashLength];

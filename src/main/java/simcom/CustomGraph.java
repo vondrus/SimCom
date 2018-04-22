@@ -11,7 +11,7 @@ import org.jgrapht.graph.SimpleDirectedGraph;
 import org.jgrapht.graph.ClassBasedEdgeFactory;
 
 
-class CustomGraph extends SimpleDirectedGraph<CustomGraphVertex, CustomGraphEdge> implements Iterable<CustomGraphLevel> {
+public class CustomGraph extends SimpleDirectedGraph<CustomGraphVertex, CustomGraphEdge> implements Iterable<CustomGraphLevel> {
     private static final long serialVersionUID = 160210295726081101L;
     private List<CustomGraphLevel> levels = new ArrayList<>();
     private String name;
@@ -28,7 +28,7 @@ class CustomGraph extends SimpleDirectedGraph<CustomGraphVertex, CustomGraphEdge
         return Collections.unmodifiableList(levels).iterator();
     }
 
-    String getName() {
+    public String getName() {
         return name;
     }
 
@@ -36,11 +36,11 @@ class CustomGraph extends SimpleDirectedGraph<CustomGraphVertex, CustomGraphEdge
         return componentCount;
     }
 
-    int getDepth() {
+    public int getDepth() {
         return levels.size();
     }
 
-    CustomGraphLevel getLevel(int levelNumber) {
+    public CustomGraphLevel getLevel(int levelNumber) {
         if (levelNumber < getDepth()) {
             return levels.get(levelNumber);
         } else {

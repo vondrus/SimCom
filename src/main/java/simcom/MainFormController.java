@@ -1,5 +1,10 @@
 package simcom;
 
+import java.io.File;
+import java.net.URL;
+import java.io.IOException;
+import java.util.ResourceBundle;
+
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -12,12 +17,10 @@ import javafx.stage.FileChooser;
 import javafx.stage.DirectoryChooser;
 import javafx.collections.ListChangeListener;
 import javafx.application.Platform;
-import javax.swing.filechooser.FileNameExtensionFilter;
+import simcom.EditDistanceSimilarity.EditDistanceSimilarity;
+import simcom.SimhashSimilarity.SimhashSimilarity;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 
 public class MainFormController implements Initializable {
@@ -371,15 +374,14 @@ public class MainFormController implements Initializable {
             tabPane.getSelectionModel().select(consoleTab);
 
             // Method 1 - Evaluate similarity
-            SimilarityMeasure1 similarityMeasure1 = new SimilarityMeasure1(leftGraph, rightGraph);
-            similarityMeasure1.evaluateSimilarity();
+            EditDistanceSimilarity editDistanceSimilarity = new EditDistanceSimilarity(leftGraph, rightGraph);
+            editDistanceSimilarity.evaluateSimilarity();
+            console.println(editDistanceSimilarity.getResultString(), console.TEXT_ATTR_RESULT);
 
             // Method 2 - Calculate simhashes and evaluate similarity
-            SimilarityMeasure2 similarityMeasure2 = new SimilarityMeasure2(leftGraph, rightGraph);
-            similarityMeasure2.evaluateSimilarity();
-
-            // Method 2 - Show results
-            console.println(similarityMeasure2.getResultString(), console.TEXT_ATTR_RESULT);
+            SimhashSimilarity simhashSimilarity = new SimhashSimilarity(leftGraph, rightGraph);
+            simhashSimilarity.evaluateSimilarity();
+            console.println(simhashSimilarity.getResultString(), console.TEXT_ATTR_RESULT);
         }
         else {
             // Get focus to graphs tab.
