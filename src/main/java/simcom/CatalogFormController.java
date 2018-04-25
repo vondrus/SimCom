@@ -16,11 +16,10 @@ import java.util.ResourceBundle;
 
 
 public class CatalogFormController implements Initializable {
-    private MainFormController mainFormController;
-    private int mainFormInitMode;
-
     @FXML
     private TilePane tilePane;
+    private MainFormController mainFormController;
+    private boolean[] graphsSelectedToCompare;
 
     private void insertToLeftSide(ActionEvent event, int buttonIndex) {
         GraphCatalog graphCatalog = mainFormController.getGraphCatalog();
@@ -58,56 +57,47 @@ public class CatalogFormController implements Initializable {
         }
     }
 
-    private void buttonsOnClickAction(ActionEvent event, int buttonIndex) {
-
-        switch (mainFormInitMode) {
-            case CatalogForm.MENU_ITEM_MODE:
-                switch (Dialogs.sideOfGraphInsertionConfirmationDialog()) {
-                    case 2:
-                        insertToLeftSide(event, buttonIndex);
-                        break;
-                    case 3:
-                        insertToRightSide(event, buttonIndex);
-                        break;
-                }
-                break;
-
-            case CatalogForm.LEFT_SIDE_CLICK_MODE:
-                insertToLeftSide(event, buttonIndex);
-                break;
-
-            case CatalogForm.RIGHT_SIDE_CLICK_MODE:
-                insertToRightSide(event, buttonIndex);
-                break;
+    private void buttonsOnClickAction(int index, StackPane stackPane) {
+        if (graphsSelectedToCompare[index]) {
+            stackPane.setStyle("-fx-border-color: white");
+            graphsSelectedToCompare[index] = false;
+        } else {
+            stackPane.setStyle("-fx-border-color: cyan");
+            graphsSelectedToCompare[index] = true;
         }
     }
 
-    void postInitialize(MainFormController mainFormController, int mainFormInitMode) {
+    void postInitialize(MainFormController mainFormController) {
         this.mainFormController = mainFormController;
-        this.mainFormInitMode = mainFormInitMode;
+        this.graphsSelectedToCompare = new boolean[mainFormController.getGraphCatalog().size()];
 
-        Button[] buttons = new Button[mainFormController.getGraphCatalog().size()];
-        for(int i = 0; i < buttons.length; i++){
+        Button[] buttons = new Button[graphsSelectedToCompare.length];
+        for (int i = 0; i < buttons.length; i++) {
             buttons[i] = new Button();
 
             ImageView imageView = new ImageView(mainFormController.getGraphCatalog().getItems().get(i).getImage());
-            imageView.setFitWidth(250);
-            imageView.setFitHeight(250);
+            imageView.setFitWidth(280);
+            imageView.setFitHeight(280);
             imageView.setPreserveRatio(true);
             imageView.setSmooth(true);
             imageView.setCache(true);
 
             Label title = new Label(' ' + mainFormController.getGraphCatalog().getItems().get(i).getGraph().getName());
+            title.setStyle("-fx-padding: 4");
             StackPane.setAlignment(title, Pos.TOP_LEFT);
             StackPane stackPane = new StackPane();
             stackPane.getChildren().addAll(imageView, title);
 
             buttons[i].setGraphic(stackPane);
+            buttons[i].setId("GraphTile");
 
             final int j = i;
-            buttons[i].setOnAction(event -> buttonsOnClickAction(event, j));
+            final StackPane sp = stackPane;
+            buttons[i].setOnAction(event -> buttonsOnClickAction(j, sp));
+
             tilePane.getChildren().add(buttons[i]);
         }
+
     }
 
     @FXML

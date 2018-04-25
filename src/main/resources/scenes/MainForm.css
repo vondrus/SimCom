@@ -1,5 +1,3 @@
-AnchorPane#AnchorPane1 { -fx-background-color: lightgrey; }
-
 StackPane#LeftStackPane { -fx-background-color: white; }
 
 StackPane#RightStackPane { -fx-background-color: white; }
@@ -8,8 +6,11 @@ Pane#LeftInfoPane { -fx-background-color: white; }
 
 Pane#RightInfoPane { -fx-background-color: white; }
 
-ScrollPane { -fx-background-color: white;
-             -fx-background: white; }
+ScrollPane { -fx-background-color: green;
+             -fx-background: blue; }
+
+TilePane { -fx-background-color: cyan;
+           -fx-background: lightgreen; }
 
 TextFlow  { -fx-background-color: white;
             -fx-font-family: monospace; }
@@ -29,11 +30,14 @@ TextFlow  { -fx-background-color: white;
 .iconDeleteContent > .label { -fx-graphic: url("../icons/iconDeleteContent.png"); }
 .iconDeleteContent > .accelerator-text { -fx-graphic: none; }
 
+.iconAddGraphs > .label { -fx-graphic: url("../icons/iconAddGraphs.png"); }
+.iconAddGraphs > .accelerator-text { -fx-graphic: none; }
+
+.iconRemoveGraphs > .label { -fx-graphic: url("../icons/iconRemoveGraphs.png"); }
+.iconRemoveGraphs > .accelerator-text { -fx-graphic: none; }
+
 .iconCompare > .label { -fx-graphic: url("../icons/iconCompare.png"); }
 .iconCompare > .accelerator-text { -fx-graphic: none; }
-
-.iconSummary > .label { -fx-graphic: url("../icons/iconSummary.png"); }
-.iconSummary > .accelerator-text { -fx-graphic: none; }
 
 .iconAbout > .label { -fx-graphic: url("../icons/iconAbout.png"); }
 .iconAbout > .accelerator-text { -fx-graphic: none; }

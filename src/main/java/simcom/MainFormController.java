@@ -3,16 +3,19 @@ package simcom;
 import java.io.File;
 import java.net.URL;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.CacheHint;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.TilePane;
 import javafx.stage.FileChooser;
 import javafx.stage.DirectoryChooser;
 import javafx.collections.ListChangeListener;
@@ -24,9 +27,11 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 
 public class MainFormController implements Initializable {
+    private ArrayList<CustomGraph> graphsToCompare = new ArrayList<>();
 
+    // remove
     private CustomGraph leftGraph;
-
+    // remove
     private CustomGraph rightGraph;
 
     private GraphCatalog graphCatalog;
@@ -66,7 +71,10 @@ public class MainFormController implements Initializable {
     private Label rightInfoLabel;
 
     @FXML
-    private ScrollPane scrollPane;
+    private TilePane tilePane;
+
+    @FXML
+    private ScrollPane consoleScrollPane;
 
     @FXML
     private Console console;
@@ -80,22 +88,6 @@ public class MainFormController implements Initializable {
     @FXML
     private void menuItemAboutOnAction() {
         Dialogs.aboutInformationDialog();
-    }
-
-    @FXML
-    private void leftStackPaneOnMouseClicked() {
-        if (graphCatalog.size() > 0)
-            new CatalogForm(this, CatalogForm.LEFT_SIDE_CLICK_MODE);
-        else
-            Dialogs.catalogIsEmptyInformationDialog();
-    }
-
-    @FXML
-    private void rightStackPaneOnMouseClicked() {
-        if (graphCatalog.size() > 0)
-            new CatalogForm(this, CatalogForm.RIGHT_SIDE_CLICK_MODE);
-        else
-            Dialogs.catalogIsEmptyInformationDialog();
     }
 
     @SuppressWarnings("Duplicates")
@@ -160,20 +152,24 @@ public class MainFormController implements Initializable {
         return "Name: " + name + ", vertices: " + vertices + ", edges: " + edges + ", depth: " + depth;
     }
 
+    private void setAvailabilityOfCatalogMenuItems() {
+        setDisableMenuItemDeleteContentOfCatalog(graphCatalog.size() == 0);
+        setDisableMenuItemShowContentOfCatalog(graphCatalog.size() == 0);
+        setDisableMenuItemAddGraphsToCompare(graphCatalog.size() == 0);
+    }
+
     private void checkCatalogFile() {
         catalogFile = new File(GlobalConstants.CATALOG_FILE_PATH);
         if (catalogFile.exists()) {
             GraphCatalogPersistence catalogReader = new GraphCatalogPersistence();
             graphCatalog = catalogReader.readFromFile(catalogFile);
-            setDisableMenuItemDeleteContentOfCatalog(graphCatalog.size() == 0);
-            setDisableMenuItemShowContentOfCatalog(graphCatalog.size() == 0);
-            setDisableMenuItemSummaryOfComparisons(graphCatalog.size() == 0);
+            setAvailabilityOfCatalogMenuItems();
         }
         else {
             graphCatalog = new GraphCatalog();
             setDisableMenuItemDeleteContentOfCatalog(true);
             setDisableMenuItemShowContentOfCatalog(true);
-            setDisableMenuItemSummaryOfComparisons(true);
+            setDisableMenuItemAddGraphsToCompare(true);
             console.println("Catalog file not found! Catalog will be empty.", console.TEXT_ATTR_ERROR);
             tabPane.getSelectionModel().select(consoleTab);
         }
@@ -273,9 +269,7 @@ public class MainFormController implements Initializable {
                 tabPane.getSelectionModel().select(consoleTab);
             }
         }
-        setDisableMenuItemDeleteContentOfCatalog(graphCatalog.size() == 0);
-        setDisableMenuItemShowContentOfCatalog(graphCatalog.size() == 0);
-        setDisableMenuItemSummaryOfComparisons(graphCatalog.size() == 0);
+        setAvailabilityOfCatalogMenuItems();
     }
 
     @FXML
@@ -310,9 +304,7 @@ public class MainFormController implements Initializable {
                 Dialogs.ioErrorDialog();
             }
         }
-        setDisableMenuItemDeleteContentOfCatalog(graphCatalog.size() == 0);
-        setDisableMenuItemShowContentOfCatalog(graphCatalog.size() == 0);
-        setDisableMenuItemSummaryOfComparisons(graphCatalog.size() == 0);
+        setAvailabilityOfCatalogMenuItems();
     }
 
     @FXML
@@ -324,7 +316,7 @@ public class MainFormController implements Initializable {
 
     @FXML
     private void menuItemShowContentOfCatalogOnAction() {
-        new CatalogForm(this, CatalogForm.MENU_ITEM_MODE);
+        new CatalogForm(this);
     }
 
     @FXML
@@ -355,8 +347,40 @@ public class MainFormController implements Initializable {
             console.println("Content of the catalog was successfully deleted.", console.TEXT_ATTR_NORMAL);
             setDisableMenuItemDeleteContentOfCatalog(true);
             setDisableMenuItemShowContentOfCatalog(true);
-            setDisableMenuItemSummaryOfComparisons(true);
+            setDisableMenuItemAddGraphsToCompare(true);
         }
+    }
+
+    @FXML
+    private void tilePaneOnMouseClicked() {
+        menuItemAddGraphsToCompareOnAction();
+    }
+
+    @FXML
+    private MenuItem menuItemRemoveGraphsFromCompare;
+
+    private void setDisableMenuItemRemoveGraphsFromCompare(boolean disable) {
+        menuItemRemoveGraphsFromCompare.setDisable(disable);
+    }
+
+    @FXML
+    private void menuItemRemoveGraphsFromCompareOnAction() {
+        // TODO
+    }
+
+    @FXML
+    private MenuItem menuItemAddGraphsToCompare;
+
+    private void setDisableMenuItemAddGraphsToCompare(boolean disable) {
+        menuItemAddGraphsToCompare.setDisable(disable);
+    }
+
+    @FXML
+    private void menuItemAddGraphsToCompareOnAction() {
+        if (graphCatalog.size() > 0)
+            new CatalogForm(this);
+        else
+            Dialogs.catalogIsEmptyInformationDialog();
     }
 
     @FXML
@@ -392,37 +416,51 @@ public class MainFormController implements Initializable {
     }
 
     @FXML
-    private MenuItem menuItemSummaryOfComparisons;
-
-    private void setDisableMenuItemSummaryOfComparisons(boolean disable) {
-        menuItemSummaryOfComparisons.setDisable(disable);
-    }
-
-    @FXML
-    private void menuItemSummaryOfComparisonsOnAction() {
-        // Get focus to console tab.
-        tabPane.getSelectionModel().select(consoleTab);
-
-        // Todo: Complete the code
-    }
-
-    @FXML
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        // Moves grip on vertical scroll bar to the bottom
         console.getChildren().addListener((ListChangeListener<Node>)
                 ((change) -> {
                     console.layout();
-                    scrollPane.layout();
-                    scrollPane.setVvalue(1.0f);
+                    consoleScrollPane.layout();
+                    consoleScrollPane.setVvalue(1.0f);
                 }));
 
-        setLeftSideGraph(null);
-        setRightSideGraph(null);
+        //setLeftSideGraph(null);
+        //setRightSideGraph(null);
 
         checkCatalogFile();
 
         setDisableMenuItemCompareGraphs(true);
 
         console.println("Ready.", console.TEXT_ATTR_NORMAL);
+
+        for (int i = 0; i < 100; i++) {
+            console.println(Integer.toString(i), console.TEXT_ATTR_NORMAL);
+        }
+
+
+        /* Tests */
+        Image tux = new Image("file:/home/vondrus/tux.jpg");
+
+        ImageView imageView1 = new ImageView(tux);
+        imageView1.setPreserveRatio(true);
+        imageView1.setSmooth(true);
+        imageView1.setCacheHint(CacheHint.SCALE);
+        imageView1.setFitWidth(200);
+        StackPane stackPane1 = new StackPane();
+        stackPane1.getChildren().add(imageView1);
+
+        ImageView imageView2 = new ImageView(tux);
+        imageView2.setPreserveRatio(true);
+        imageView2.setSmooth(true);
+        imageView2.setCacheHint(CacheHint.SCALE);
+        imageView2.setFitWidth(200);
+        StackPane stackPane2 = new StackPane();
+        stackPane2.getChildren().add(imageView2);
+
+        tilePane.getChildren().add(stackPane1);
+        tilePane.getChildren().add(stackPane2);
+
     }
 }

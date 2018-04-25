@@ -1,11 +1,21 @@
-ScrollPane#ScrollPane { -fx-background-color: gray; }
+ScrollPane#ScrollPane { -fx-background-color: gray;
+                        -fx-background: gray; }
 
 TilePane#TilePane { -fx-background-color: gray; }
 
-Button { -fx-pref-width: 250px;
-         -fx-pref-height: 250px;
-         -fx-background-color: white;
-         -fx-background-radius: 0;
-         -fx-background-insets: 0;
-         -fx-padding: 0;
-       }
+StackPane {-fx-min-height: 288px;
+           -fx-max-height: 288px;
+           -fx-min-width: 288px;
+           -fx-max-width: 288px;
+           -fx-border-color: white;
+           -fx-border-width: 4;
+          }
+
+Button#AddForComparison { }
+
+Button#GraphTile { -fx-background-color: white;
+                   -fx-background-radius: 0;
+                   -fx-background-insets: 0;
+                   -fx-border-width: 0;
+                   -fx-padding: 0;
+                 }
