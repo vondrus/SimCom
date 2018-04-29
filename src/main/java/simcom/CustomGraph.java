@@ -49,7 +49,7 @@ public class CustomGraph extends SimpleDirectedGraph<CustomGraphVertex, CustomGr
     }
 
     Image getImage() throws IOException {
-        final ProcessBuilder builder = new ProcessBuilder(GlobalConstants.DOT_EXEC_FILE_PATH, "-Tpng");
+        final ProcessBuilder builder = new ProcessBuilder("/usr/bin/dot", "-Tpng");
         final Process process = builder.start();
         final Image[] image = new Image[1];
 

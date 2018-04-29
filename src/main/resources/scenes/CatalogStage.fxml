@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane id="GridPane1" stylesheets="/scenes/CatalogStage.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="simcom.CatalogStageController" >
+    <rowConstraints>
+        <RowConstraints minHeight="300" maxHeight="Infinity" />
+        <RowConstraints minHeight="100" maxHeight="100" />
+    </rowConstraints>
+
+    <ScrollPane GridPane.columnIndex="0" GridPane.rowIndex="0" >
+        <TilePane fx:id="tilePane" hgap="4.0" vgap="4.0" prefColumns="6" />
+        <padding>
+            <Insets bottom="4.0" top="4.0" left="4.0" right="4.0" />
+        </padding>
+    </ScrollPane>
+
+    <GridPane id="GridPane2" GridPane.columnIndex="0" GridPane.rowIndex="1" alignment="center" >
+        <Label fx:id="label" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.halignment="CENTER" >
+            <GridPane.margin>
+                <Insets top="20.0" />
+            </GridPane.margin>
+        </Label>
+        <Button fx:id="defaultButton" defaultButton="true" mnemonicParsing="false" onAction="#defaultButtonOnAction" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.halignment="CENTER" >
+            <GridPane.margin>
+                <Insets top="20.0" bottom="20.0" />
+            </GridPane.margin>
+        </Button>
+    </GridPane>
+</GridPane>

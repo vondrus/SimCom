@@ -8,8 +8,6 @@ import javafx.application.Platform;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Optional;
-
 
 class Dialogs {
 
@@ -120,30 +118,6 @@ class Dialogs {
 
 /* ------------------------------------------------------------------------------------------------------------------ */
 
-    static int sideOfGraphInsertionConfirmationDialog() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmation");
-        alert.setHeaderText("To which side of tab do you want to insert selected graph?");
-        alert.setContentText("Choose your option.");
-
-        ButtonType buttonTypeOne = new ButtonType("Left");
-        ButtonType buttonTypeTwo = new ButtonType("Right");
-        ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
-
-        alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo, buttonTypeCancel);
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == buttonTypeOne){
-            return 2;
-        } else if (result.get() == buttonTypeTwo) {
-            return 3;
-        } else {
-            return 1;
-        }
-    }
-
-/* ------------------------------------------------------------------------------------------------------------------ */
-
 
     static boolean quitConfirmationDialog() {
         return genericConfirmationDialog(null, "Are you sure you want to quit this program?");
@@ -155,11 +129,18 @@ class Dialogs {
                 "All stored graphs will be lost!");
     }
 
+    static boolean removeAllGraphsFromComparisonConfirmationDialog() {
+        return genericConfirmationDialog(
+                "Are you sure to remove graphs?",
+                "All graphs prepared for comparison will be removed!");
+    }
+
     static void aboutInformationDialog() {
-        genericInformationDialog(GlobalConstants.APP_NAME,
-                "Copyright \u00a9 2017 Petr Vondrus\n"
-                        + "CTU in Prague\n"
-                        + "Faculty of Electrical Engineering");
+        genericInformationDialog("SimCom - Similarity Comparator", String.format("%s%n%s%n%s",
+                "Copyright \u00a9 2018 Petr Vondrus",
+                "Czech Technical University in Prague",
+                "Faculty of Electrical Engineering"
+        ));
     }
 
     static void sameGraphInCatalogInformationDialog(String graphName) {
@@ -184,10 +165,6 @@ class Dialogs {
 
     static void cannotAddGraphComponentErrorDialog() {
         genericErrorDialog("Cannot add selected graph to the catalog.", "Graph contains more than one component.");
-    }
-
-    static void missingGraphToCompareErrorDialog() {
-        genericErrorDialog("Cannot compare graphs.", "One or both graph is missing.");
     }
 
     static void dotExecutableNotFoundErrorDialog() {

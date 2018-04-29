@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.input.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import simcom.Console?>
+
+
+<GridPane xmlns:fx="http://javafx.com/fxml/1" id="GridPane1" stylesheets="/scenes/MainStage.css" xmlns="http://javafx.com/javafx/8" fx:controller="simcom.MainStageController">
+
+    <MenuBar GridPane.columnIndex="0" GridPane.rowIndex="0" >
+        <Menu mnemonicParsing="false" text="File">
+            <MenuItem mnemonicParsing="false" onAction="#menuItemQuitOnAction" styleClass="iconQuit" text="Quit">
+                <accelerator>
+                    <KeyCodeCombination alt="UP" code="Q" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                </accelerator>
+            </MenuItem>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Catalog">
+            <MenuItem mnemonicParsing="false" onAction="#menuItemShowContentOfCatalogOnAction" fx:id="menuItemShowContentOfCatalog" styleClass="iconShowContent" text="Show content">
+                <accelerator>
+                    <KeyCodeCombination alt="DOWN" code="S" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                </accelerator>
+            </MenuItem>
+            <MenuItem mnemonicParsing="false" onAction="#menuItemDeleteContentOfCatalogOnAction" fx:id="menuItemDeleteContentOfCatalog" styleClass="iconDeleteContent" text="Delete content">
+                <accelerator>
+                    <KeyCodeCombination alt="DOWN" code="D" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                </accelerator>
+            </MenuItem>
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" onAction="#menuItemImportGraphFromFileOnAction" styleClass="iconImportFile" text="Import graph from file">
+                <accelerator>
+                    <KeyCodeCombination alt="DOWN" code="I" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                </accelerator>
+            </MenuItem>
+            <MenuItem mnemonicParsing="false" onAction="#menuItemImportGraphsFromDirectoryOnAction" styleClass="iconImportDirectory" text="Import graphs from directory">
+                <accelerator>
+                    <KeyCodeCombination alt="DOWN" code="I" control="UP" meta="UP" shift="DOWN" shortcut="UP" />
+                </accelerator>
+            </MenuItem>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Graph">
+            <MenuItem mnemonicParsing="false" onAction="#menuItemAddGraphsForComparisonOnAction" fx:id="menuItemAddGraphsForComparison" styleClass="iconAddGraphs" text="Add graphs for comparison">
+                <accelerator>
+                    <KeyCodeCombination alt="DOWN" code="A" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                </accelerator>
+            </MenuItem>
+            <MenuItem mnemonicParsing="false" onAction="#menuItemRemoveAllGraphsFromComparisonOnAction" fx:id="menuItemRemoveAllGraphsFromComparison" styleClass="iconRemoveGraphs" text="Remove all graphs">
+                <accelerator>
+                    <KeyCodeCombination alt="DOWN" code="X" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                </accelerator>
+            </MenuItem>
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" onAction="#menuItemCompareGraphsOnAction" fx:id="menuItemCompareGraphs" styleClass="iconCompare" text="Compare graphs">
+                <accelerator>
+                    <KeyCodeCombination alt="DOWN" code="C" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                </accelerator>
+            </MenuItem>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Help">
+            <MenuItem mnemonicParsing="false" onAction="#menuItemAboutOnAction" styleClass="iconAbout" text="About" />
+        </Menu>
+    </MenuBar>
+
+    <TabPane id="TabPane" fx:id="tabPane" GridPane.columnIndex="0" GridPane.rowIndex="1" tabClosingPolicy="UNAVAILABLE" >
+        <Tab id="GraphsTab" closable="false" text="Graphs">
+            <ScrollPane id="TilePaneScrollPane" fx:id="tilePaneScrollPane" minWidth="1854" maxWidth="1854" minHeight="1000" maxHeight="1000">
+                <TilePane id="TilePane" fx:id="tilePane" hgap="4.0" vgap="4.0" prefColumns="3" />
+                <padding>
+                    <Insets bottom="4.0" top="4.0" left="4.0" right="4.0" />
+                </padding>
+            </ScrollPane>
+        </Tab>
+        <Tab id="ConsoleTab" fx:id="consoleTab" closable="false" text="Console">
+            <ScrollPane id="ConsoleScrollPane" fx:id="consoleScrollPane">
+                <Console id="Console" fx:id="console" lineSpacing="2.0">
+                    <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                    </padding>
+                </Console>
+            </ScrollPane>
+        </Tab>
+    </TabPane>
+
+</GridPane>
