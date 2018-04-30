@@ -28,6 +28,7 @@ public class MainStage extends Application {
                     Platform.exit();
             });
 
+            primaryStage.setResizable(AuxiliaryUtility.isResizableStage());
             primaryStage.show();
         }
         else
@@ -35,6 +36,7 @@ public class MainStage extends Application {
     }
 
     public static void main(String[] args) {
+        AuxiliaryUtility.parseCommandLineParameters(args);
         launch(args);
     }
 }

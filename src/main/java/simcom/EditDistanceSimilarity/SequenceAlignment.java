@@ -1,7 +1,5 @@
 package simcom.EditDistanceSimilarity;
 
-import simcom.AuxiliaryUtility;
-
 /**
  * This class carries out the calculation of Minimal Edit Distance
  * of two sequences. These sequences are represented by double arrays.
@@ -21,64 +19,6 @@ class SequenceAlignment {
         this.similarityFunction = similarityFunction;
 
         fillMatrix();
-
-        // Debug mode
-        if (AuxiliaryUtility.isDebugMode()) {
-            printMatrix();
-        }
-    }
-
-    /**
-     * In debug mode prints the Edit Distance Table to standard output stream.
-     */
-    private void printMatrix() {
-        final String INIT_CELL = "    *    ";
-        final String EMPTY_CELL = "  Matrix ";
-        final String HORIZONTAL_SEPARATOR_CELL = "---------";
-        final String VERTICAL_SEPARATOR_CELL = " | ";
-        final String CROSS_SEPARATOR_CELL = " + ";
-        final String FLOAT_FORMAT = "%9.4f";
-
-        StringBuilder rv = new StringBuilder(
-                String.format("%n%s%s%s",
-                        EMPTY_CELL,
-                        VERTICAL_SEPARATOR_CELL,
-                        INIT_CELL
-                )
-        );
-
-        StringBuilder hs = new StringBuilder(
-                String.format("%s%s%s",
-                        HORIZONTAL_SEPARATOR_CELL,
-                        CROSS_SEPARATOR_CELL,
-                        HORIZONTAL_SEPARATOR_CELL
-                )
-        );
-
-        for (double a : sequence2) {
-            rv = rv.append(String.format(FLOAT_FORMAT, a));
-            hs = hs.append(HORIZONTAL_SEPARATOR_CELL);
-        }
-
-        rv = rv.append(String.format("%n%s%n", hs));
-
-        for (int i = 0; i < matrix.length; i++) {
-            if (i == 0) {
-                rv = rv.append(INIT_CELL);
-            } else {
-                rv = rv.append(String.format(FLOAT_FORMAT, sequence1[i - 1]));
-            }
-
-            rv = rv.append(VERTICAL_SEPARATOR_CELL);
-
-            for (int j = 0; j < matrix[0].length; j++) {
-                rv = rv.append(String.format(FLOAT_FORMAT, matrix[i][j]));
-            }
-
-            rv = rv.append(String.format("%n"));
-        }
-
-        System.out.println(rv.toString());
     }
 
     /**
@@ -114,4 +54,61 @@ class SequenceAlignment {
     double getMinimalEditDistance() {
         return matrix[matrix.length - 1][matrix[0].length - 1];
     }
+
+    /**
+     * Returns the Edit Distance Table
+     * @return String Edit Distance Table in human readable format (for debug mode)
+     */
+    String getDebugString() {
+        final String INIT_CELL = "    *    ";
+        final String EMPTY_CELL = "  Matrix ";
+        final String HORIZONTAL_SEPARATOR_CELL = "---------";
+        final String VERTICAL_SEPARATOR_CELL = " | ";
+        final String CROSS_SEPARATOR_CELL = " + ";
+        final String FLOAT_FORMAT = "%9.4f";
+
+        StringBuilder rv = new StringBuilder(
+                String.format("%n%s%s%s",
+                        EMPTY_CELL,
+                        VERTICAL_SEPARATOR_CELL,
+                        INIT_CELL
+                )
+        );
+
+        StringBuilder hs = new StringBuilder(
+                String.format("%s%s%s",
+                        HORIZONTAL_SEPARATOR_CELL,
+                        CROSS_SEPARATOR_CELL,
+                        HORIZONTAL_SEPARATOR_CELL
+                )
+        );
+
+        for (double a : sequence2) {
+            rv.append(String.format(FLOAT_FORMAT, a));
+            hs.append(HORIZONTAL_SEPARATOR_CELL);
+        }
+
+        rv.append(String.format("%n%s%n", hs));
+
+        for (int i = 0; i < matrix.length; i++) {
+            if (i == 0) {
+                rv.append(INIT_CELL);
+            } else {
+                rv.append(String.format(FLOAT_FORMAT, sequence1[i - 1]));
+            }
+
+            rv.append(VERTICAL_SEPARATOR_CELL);
+
+            for (int j = 0; j < matrix[0].length; j++) {
+                rv.append(String.format(FLOAT_FORMAT, matrix[i][j]));
+            }
+
+            rv.append(String.format("%n"));
+        }
+
+        rv.append(String.format("%n"));
+
+        return rv.toString();
+    }
+
 }

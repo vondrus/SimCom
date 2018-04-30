@@ -1,15 +1,34 @@
 package simcom;
 
-
 public class AuxiliaryUtility {
-    private static boolean debugMode = true;
+    private static boolean debugMode;
+    private static boolean resizableStage;
 
-    public static boolean isDebugMode() {
+    static boolean isDebugMode() {
         return debugMode;
     }
 
-    public static void setDebugMode(boolean debugMode) {
-        AuxiliaryUtility.debugMode = debugMode;
+    private static void setDebugModeOn() {
+        debugMode = true;
+    }
+
+    static boolean isResizableStage() {
+        return resizableStage;
+    }
+
+    private static void setResizableStageOn() {
+        resizableStage = true;
+    }
+
+    static void parseCommandLineParameters(String[] args) {
+        for (String s : args) {
+            if (s.equals("debug")) {
+                setDebugModeOn();
+            }
+            if (s.equals("resizable")) {
+                setResizableStageOn();
+            }
+        }
     }
 
     public static String ByteArrayAsBinLittleEndian (byte[] a) {

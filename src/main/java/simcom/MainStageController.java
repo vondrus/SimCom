@@ -219,7 +219,7 @@ public class MainStageController implements Initializable {
                         tilePane.getChildren().add(vBox);
 
                         // Message to console
-                        console.println("Graph " + graph.getName() + " was loaded from the catalog to the left pane.", console.TEXT_ATTR_NORMAL);
+                        console.println("Graph " + graph.getName() + " was loaded from the catalog to the Graphs tab.", console.TEXT_ATTR_NORMAL);
 
                         // Set appropriate state of some menu items
                         setMenuItemsAvailability();
@@ -253,14 +253,20 @@ public class MainStageController implements Initializable {
             for (CustomGraph graph2 : graphsForComparison) {
 
                 // Method 1 - Evaluate similarity
-                EditDistanceSimilarity editDistanceSimilarity = new EditDistanceSimilarity(graph1, graph2);
+                EditDistanceSimilarity editDistanceSimilarity = new EditDistanceSimilarity(graph1, graph2, "Edit distance");
                 editDistanceSimilarity.evaluateSimilarity();
                 console.println(editDistanceSimilarity.getResultString(), console.TEXT_ATTR_RESULT);
+                if (AuxiliaryUtility.isDebugMode()) {
+                    System.out.println(editDistanceSimilarity.getDebugString());
+                }
 
                 // Method 2 - Calculate simhashes and evaluate similarity
-                SimhashSimilarity simhashSimilarity = new SimhashSimilarity(graph1, graph2);
+                SimhashSimilarity simhashSimilarity = new SimhashSimilarity(graph1, graph2, "SimHash");
                 simhashSimilarity.evaluateSimilarity();
                 console.println(simhashSimilarity.getResultString(), console.TEXT_ATTR_RESULT);
+                if (AuxiliaryUtility.isDebugMode()) {
+                    System.out.println(simhashSimilarity.getDebugString());
+                }
             }
         }
     }

@@ -9,8 +9,8 @@ import simcom.SimilarityMeasure.SimilarityMeasure;
 public class EditDistanceSimilarity extends SimilarityMeasure {
     private enum Attribute { INDEGREE, OUTDEGREE, LABEL }
 
-    public EditDistanceSimilarity(CustomGraph graph1, CustomGraph graph2) {
-        super(graph1, graph2);
+    public EditDistanceSimilarity(CustomGraph graph1, CustomGraph graph2, String technique) {
+        super(graph1, graph2, technique);
     }
 
     private double[] levelToArray(CustomGraph graph, int levelNumber, Attribute attribute) {
@@ -20,8 +20,11 @@ public class EditDistanceSimilarity extends SimilarityMeasure {
             double[] rv = new double[level.size()];
             StringBuilder sb = new StringBuilder();
 
-            System.out.println("  Attribute: " + attribute);
-            System.out.print("    Vertices: ");
+            debugString.append(String.format(
+                    "  Attribute: %s%n" +
+                    "    Vertices: ",
+                    attribute
+            ));
 
             for (int i = 0; i < rv.length; i++) {
                 switch (attribute) {
@@ -37,12 +40,10 @@ public class EditDistanceSimilarity extends SimilarityMeasure {
                         sb.append(level.get(i).getLabel());
                         break;
                 }
-
-                System.out.print(level.get(i).getLabel() + " ");
-
+                debugString.append(String.format("%s ", level.get(i).getLabel()));
             }
 
-            // Lejbly
+            // Labels of vertices
             if (attribute == Attribute.LABEL) {
                 String labelsString = sb.toString();
                 double[] labelsArray = new double[labelsString.length()];
@@ -51,13 +52,12 @@ public class EditDistanceSimilarity extends SimilarityMeasure {
                     labelsArray[i] = (int) labelsString.charAt(i);
                 }
 
-                System.out.println();
-                System.out.print("    Spliced labels: " + labelsString);
+                debugString.append(String.format("%n    Spliced labels: %s", labelsString));
 
                 rv = labelsArray;
             }
 
-            System.out.println();
+            debugString.append(String.format("%n"));
 
             return rv;
 
@@ -75,10 +75,10 @@ public class EditDistanceSimilarity extends SimilarityMeasure {
         double sumOfGammaFinals = 0;
         double productOfGammaFinals = 1;
 
-        //
+        // Iterate over graph levels
         for (int i = 0; i < depth; i++) {
 
-            System.out.println("Level: " + i);
+            debugString.append(String.format("%nLevel: %d%n", i));
 
             double[] sequenceIndegree1 = levelToArray(graph1, i, Attribute.INDEGREE);
             double[] sequenceIndegree2 = levelToArray(graph2, i, Attribute.INDEGREE);
@@ -89,18 +89,23 @@ public class EditDistanceSimilarity extends SimilarityMeasure {
 
             SequenceAlignment alignmentIndegree12 =
                     new SequenceAlignment(sequenceIndegree1, sequenceIndegree2, new ExponentialFunction());
+            debugString.append(alignmentIndegree12.getDebugString());
 
             SequenceAlignment alignmentIndegree21 =
                     new SequenceAlignment(sequenceIndegree2, sequenceIndegree1, new ExponentialFunction());
+            debugString.append(alignmentIndegree21.getDebugString());
 
             SequenceAlignment alignmentOutdegree12 =
                     new SequenceAlignment(sequenceOutdegree1, sequenceOutdegree2, new ExponentialFunction());
+            debugString.append(alignmentOutdegree12.getDebugString());
 
             SequenceAlignment alignmentOutdegree21 =
                     new SequenceAlignment(sequenceOutdegree2, sequenceOutdegree1, new ExponentialFunction());
+            debugString.append(alignmentOutdegree21.getDebugString());
 
             SequenceAlignment alignmentLabel =
                     new SequenceAlignment(sequenceLabel1, sequenceLabel2, new SimpleFunction());
+            debugString.append(alignmentLabel.getDebugString());
 
 
             double gammaIndegree = 1 - (alignmentIndegree12.getMinimalEditDistance() + alignmentIndegree21.getMinimalEditDistance())
@@ -117,22 +122,31 @@ public class EditDistanceSimilarity extends SimilarityMeasure {
             sumOfGammaFinals += gammaFinal;
             productOfGammaFinals *= gammaFinal;
 
-
-            System.out.println("gammaIndegree  = " + gammaIndegree);
-            System.out.println("gammaOutdegree = " + gammaOutdegree);
-            System.out.println("gammaLabel     = " + gammaLabel);
-            System.out.println("gammaFinal     = " + gammaFinal);
-            System.out.println();
+            debugString.append(String.format(
+                    "gammaIndegree  = %f%n" +
+                    "gammaOutdegree = %f%n" +
+                    "gammaLabel     = %f%n" +
+                    "gammaFinal     = %f%n",
+                    gammaIndegree,
+                    gammaOutdegree,
+                    gammaLabel,
+                    gammaFinal
+            ));
         }
-
-        System.out.println();
-        System.out.println("sumOfGammaFinals     = " + sumOfGammaFinals);
-        System.out.println("productOfGammaFinals = " + productOfGammaFinals);
-        System.out.println();
 
         double similarity = (depth * productOfGammaFinals) / sumOfGammaFinals;
 
-        System.out.println("Similarity = " + similarity + "\n");
+        debugString.append(String.format(
+                "%n" +
+                "sumOfGammaFinals     = %f%n" +
+                "productOfGammaFinals = %f%n%n" +
+                "Similarity = %f%n",
+                sumOfGammaFinals,
+                productOfGammaFinals,
+                similarity
+        ));
+
+        resultString.append(String.format("%n    Similarity = %.4f%n", similarity));
     }
 
 }

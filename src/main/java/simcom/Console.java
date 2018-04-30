@@ -4,7 +4,6 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.scene.paint.Color;
 
-
 public class Console extends TextFlow {
 
     private static final int SIZE = 100;
@@ -21,7 +20,7 @@ public class Console extends TextFlow {
     }
 
     void println(String text, int textAttr) {
-        Text t = new Text(text + '\n');
+        Text t = new Text(String.format("%s%n", text));
         switch (textAttr) {
             case TEXT_ATTR_NORMAL: t.setFill(Color.BLACK);
                 break;
@@ -31,9 +30,5 @@ public class Console extends TextFlow {
                 break;
         }
         addText(t);
-    }
-
-    void println() {
-        addText(new Text("\n"));
     }
 }

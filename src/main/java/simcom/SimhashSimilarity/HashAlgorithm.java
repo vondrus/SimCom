@@ -3,7 +3,6 @@ package simcom.SimhashSimilarity;
 import com.google.common.hash.Hashing;
 import com.google.common.hash.HashFunction;
 
-
 public enum HashAlgorithm {
 
     // Here is the only place to insert additional hash algorithm.

@@ -39,7 +39,7 @@ class CatalogStage extends Stage {
                 catalogStage.close();
             });
 
-            catalogStage.setResizable(false);
+            catalogStage.setResizable(AuxiliaryUtility.isResizableStage());
             catalogStage.showAndWait();
         } catch (IOException e) {
             Dialogs.exceptionDialog(e);

@@ -24,9 +24,7 @@ VBox { -fx-background-color: white;
        -fx-border-width: 1;
      }
 
-TextFlow  { -fx-background-color: white;
-            -fx-font-family: monospace;
-          }
+Text  { -fx-font-family: monospace; }
 
 
 .iconQuit > .label { -fx-graphic: url("../icons/iconQuit.png"); }
