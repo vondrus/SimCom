@@ -64,7 +64,7 @@
     </MenuBar>
 
     <TabPane id="TabPane" fx:id="tabPane" GridPane.columnIndex="0" GridPane.rowIndex="1" tabClosingPolicy="UNAVAILABLE" >
-        <Tab id="GraphsTab" closable="false" text="Graphs">
+        <Tab id="GraphsTab" fx:id="graphsTab" closable="false" text="Graphs">
             <ScrollPane id="TilePaneScrollPane" fx:id="tilePaneScrollPane" minWidth="1854" maxWidth="1854" minHeight="1000" maxHeight="1000">
                 <TilePane id="TilePane" fx:id="tilePane" hgap="4.0" vgap="4.0" prefColumns="3" />
                 <padding>

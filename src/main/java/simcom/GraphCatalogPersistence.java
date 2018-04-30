@@ -2,38 +2,10 @@ package simcom;
 
 import java.io.*;
 
-
 @SuppressWarnings("Duplicates")
 class GraphCatalogPersistence {
 
-    void writeToFile(File file, GraphCatalog catalog) {
-        FileOutputStream fileOutputStream = null;
-        ObjectOutputStream objectOutputStream = null;
-
-        try {
-            fileOutputStream = new FileOutputStream(file);
-            objectOutputStream = new ObjectOutputStream(fileOutputStream);
-
-            for (GraphCatalogItem item : catalog.getItems())
-                objectOutputStream.writeObject(item.getGraph());
-
-        } catch (IOException e) {
-            Dialogs.exceptionDialog(e);
-        }
-        finally {
-            try {
-                if (objectOutputStream != null)
-                    objectOutputStream.close();
-                if (fileOutputStream != null)
-                    fileOutputStream.close();
-            } catch (IOException e) {
-                Dialogs.exceptionDialog(e);
-            }
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    GraphCatalog readFromFile(File file) {
+    static GraphCatalog readFromFile(File file) {
         GraphCatalog graphCatalog = new GraphCatalog();
         FileInputStream fileInputStream = null;
         ObjectInputStream objectInputStream = null;
@@ -67,4 +39,31 @@ class GraphCatalogPersistence {
         }
         return null;
     }
+
+    static void writeToFile(File file, GraphCatalog catalog) {
+        FileOutputStream fileOutputStream = null;
+        ObjectOutputStream objectOutputStream = null;
+
+        try {
+            fileOutputStream = new FileOutputStream(file);
+            objectOutputStream = new ObjectOutputStream(fileOutputStream);
+
+            for (GraphCatalogItem item : catalog.getItems())
+                objectOutputStream.writeObject(item.getGraph());
+
+        } catch (IOException e) {
+            Dialogs.exceptionDialog(e);
+        }
+        finally {
+            try {
+                if (objectOutputStream != null)
+                    objectOutputStream.close();
+                if (fileOutputStream != null)
+                    fileOutputStream.close();
+            } catch (IOException e) {
+                Dialogs.exceptionDialog(e);
+            }
+        }
+    }
+
 }

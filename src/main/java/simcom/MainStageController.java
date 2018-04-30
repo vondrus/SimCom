@@ -1,10 +1,11 @@
 package simcom;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -21,20 +22,21 @@ import javafx.stage.DirectoryChooser;
 import javafx.collections.ListChangeListener;
 import javafx.application.Platform;
 
-import javax.swing.filechooser.FileNameExtensionFilter;
+import simcom.SimhashSimilarity.SimhashSimilarity;
+import simcom.EditDistanceSimilarity.EditDistanceSimilarity;
 
+import static simcom.GraphCatalogUtility.*;
 
 public class MainStageController implements Initializable {
-    private static final String CATALOG_FILE_PATH = "catalog.bin";
-
     private ArrayList<CustomGraph> graphsForComparison = new ArrayList<>();
     private GraphCatalog graphCatalog;
-    private File catalogFile;
     private String lastOpenDirectory;
 
     // FXML: Containers
     @FXML
     private TabPane tabPane;
+    @FXML
+    private Tab graphsTab;
     @FXML
     private Tab consoleTab;
     @FXML
@@ -71,62 +73,6 @@ public class MainStageController implements Initializable {
         Dialogs.aboutInformationDialog();
     }
 
-    private boolean importGraphFromFile(File file, boolean consoleMode) {
-        boolean rv = false;
-        CustomGraph graph = GraphUtility.loadGraphFromDotFile(file);
-        if (graph != null) {
-            String graphFilename = file.getName();
-            graph.createHierarchicalStructure();
-            if (graph.getComponentCount() == 1) {
-                try {
-                    Image image = graph.getImage();
-                    if (image != null) {
-                        int indexOf = graphCatalog.indexOf(graph);
-                        if (indexOf == -1) {
-                            GraphCatalogItem newGraphCatalogItem = new GraphCatalogItem(graph, image);
-                            if (graphCatalog.add(newGraphCatalogItem)) {
-                                GraphCatalogPersistence catalogWriter = new GraphCatalogPersistence();
-                                catalogWriter.writeToFile(new File(CATALOG_FILE_PATH), graphCatalog);
-                                console.println("Graph " + graph.getName() + " was added to to the catalog.", console.TEXT_ATTR_NORMAL);
-                                rv = true;
-                            } else {
-                                if (consoleMode) {
-                                    console.println("Cannot add graph " + graphFilename
-                                            + " to the catalog. Collection was not changed.", console.TEXT_ATTR_ERROR);
-                                }
-                                else {
-                                    Dialogs.cannotAddGraphCollectionErrorDialog();
-                                }
-                            }
-                        } else {
-                            String graphName = graphCatalog.getItems().get(indexOf).getGraph().getName();
-                            if (consoleMode) {
-                                console.println("Cannot add graph " + graphFilename
-                                        + " to the catalog. The same one is already in the catalog ("
-                                        + graphName + ").", console.TEXT_ATTR_ERROR);
-                            }
-                            else {
-                                Dialogs.sameGraphInCatalogInformationDialog(graphName);
-                            }
-                        }
-                    }
-                } catch (IOException e) {
-                    Dialogs.exceptionDialog(e);
-                }
-            }
-            else {
-                if (consoleMode) {
-                    console.println("Cannot add graph "
-                            + graphFilename + " to the catalog. It contains more than one component.", console.TEXT_ATTR_ERROR);
-                }
-                else {
-                    Dialogs.cannotAddGraphComponentErrorDialog();
-                }
-            }
-        }
-        return (rv);
-    }
-
     @FXML
     private void menuItemImportGraphFromFileOnAction() {
         FileChooser fileChooser = new FileChooser();
@@ -141,7 +87,7 @@ public class MainStageController implements Initializable {
         if (selectedFile != null) {
             String absPath = selectedFile.getAbsolutePath();
             lastOpenDirectory = absPath.substring(0, absPath.lastIndexOf(File.separator));
-            if (importGraphFromFile(selectedFile, false)) {
+            if (importGraphFromFile(selectedFile, graphCatalog, console,false)) {
                 tabPane.getSelectionModel().select(consoleTab);
             }
         }
@@ -167,7 +113,7 @@ public class MainStageController implements Initializable {
                 for (final File file : allFiles) {
                     if (extensionFilter.accept(file)) {
                         if (file.isFile()) {
-                            importGraphFromFile(file, true);
+                            importGraphFromFile(file, graphCatalog, console, true);
                             processedFiles++;
                         }
                     }
@@ -201,11 +147,7 @@ public class MainStageController implements Initializable {
             graphCatalog = new GraphCatalog();
 
             // Delete catalog file
-            if (catalogFile.exists()) {
-                if (! catalogFile.delete()) {
-                    Dialogs.ioErrorDialog();
-                }
-            }
+            deleteGraphCatalogFile();
 
             // Set appropriate state of some menu items
             setMenuItemsAvailability();
@@ -226,60 +168,61 @@ public class MainStageController implements Initializable {
             boolean[] graphsSelectedForComparison = catalogStage.getResult();
 
             if (graphsSelectedForComparison != null) {
+                tabPane.getSelectionModel().select(graphsTab);
+
                 for (int i = 0; i < graphsSelectedForComparison.length; i++) {
                     if (graphsSelectedForComparison[i]) {
 
                         GraphCatalogItem item = graphCatalog.getItems().get(i);
                         CustomGraph graph = item.getGraph();
+                        item.setSelected(true);
 
-                        if (! graphsForComparison.contains(graph)) {
-                            // Add graph to comparison
-                            graphsForComparison.add(graph);
+                        // Add graph to comparison
+                        graphsForComparison.add(graph);
 
-                            // ImageView
-                            Image image = item.getImage();
-                            ImageView imageView = new ImageView(image);
-                            imageView.setPreserveRatio(true);
-                            imageView.setSmooth(true);
-                            imageView.setCache(true);
-                            imageView.setCacheHint(CacheHint.SCALE);
-                            if ((image.getWidth() > IMAGE_VIEW_FIT_WIDTH) || (image.getHeight() > IMAGE_VIEW_FIT_HEIGHT)) {
-                                imageView.setFitWidth(IMAGE_VIEW_FIT_WIDTH);
-                                imageView.setFitHeight(IMAGE_VIEW_FIT_HEIGHT);
-                            } else {
-                                imageView.setFitWidth(0);
-                                imageView.setFitHeight(0);
-                            }
-
-                            // StackPane
-                            StackPane stackPane = new StackPane();
-                            stackPane.setId("StackPane");
-                            stackPane.getChildren().add(imageView);
-
-                            // Label
-                            Label label = new Label();
-                            label.setId("GraphLabel");
-                            label.setText(String.format("Name: %s, vertices: %s, edges: %s, depth: %s",
-                                    graph.getName(),
-                                    graph.vertexSet().size(),
-                                    graph.edgeSet().size(),
-                                    graph.getDepth()
-                            ));
-
-                            // VBox
-                            VBox vBox = new VBox();
-                            vBox.getChildren().add(stackPane);
-                            vBox.getChildren().add(label);
-
-                            // TilePane
-                            tilePane.getChildren().add(vBox);
-
-                            // Message to console
-                            console.println("Graph " + graph.getName() + " was loaded from the catalog to the left pane.", console.TEXT_ATTR_NORMAL);
-
-                            // Set appropriate state of some menu items
-                            setMenuItemsAvailability();
+                        // ImageView
+                        Image image = item.getImage();
+                        ImageView imageView = new ImageView(image);
+                        imageView.setPreserveRatio(true);
+                        imageView.setSmooth(true);
+                        imageView.setCache(true);
+                        imageView.setCacheHint(CacheHint.SCALE);
+                        if ((image.getWidth() > IMAGE_VIEW_FIT_WIDTH) || (image.getHeight() > IMAGE_VIEW_FIT_HEIGHT)) {
+                            imageView.setFitWidth(IMAGE_VIEW_FIT_WIDTH);
+                            imageView.setFitHeight(IMAGE_VIEW_FIT_HEIGHT);
+                        } else {
+                            imageView.setFitWidth(0);
+                            imageView.setFitHeight(0);
                         }
+
+                        // StackPane
+                        StackPane stackPane = new StackPane();
+                        stackPane.setId("StackPane");
+                        stackPane.getChildren().add(imageView);
+
+                        // Label
+                        Label label = new Label();
+                        label.setId("GraphLabel");
+                        label.setText(String.format("Name: %s, vertices: %s, edges: %s, depth: %s",
+                                graph.getName(),
+                                graph.vertexSet().size(),
+                                graph.edgeSet().size(),
+                                graph.getDepth()
+                        ));
+
+                        // VBox
+                        VBox vBox = new VBox();
+                        vBox.getChildren().add(stackPane);
+                        vBox.getChildren().add(label);
+
+                        // TilePane
+                        tilePane.getChildren().add(vBox);
+
+                        // Message to console
+                        console.println("Graph " + graph.getName() + " was loaded from the catalog to the left pane.", console.TEXT_ATTR_NORMAL);
+
+                        // Set appropriate state of some menu items
+                        setMenuItemsAvailability();
                     }
                 }
             }
@@ -301,29 +244,25 @@ public class MainStageController implements Initializable {
 
     @FXML
     private void menuItemCompareGraphsOnAction() {
-        /*
-        if ((leftGraph != null) && (rightGraph != null)) {
 
-            // Get focus to console tab
-            tabPane.getSelectionModel().select(consoleTab);
+        // Get focus to console tab
+        tabPane.getSelectionModel().select(consoleTab);
 
-            // Method 1 - Evaluate similarity
-            EditDistanceSimilarity editDistanceSimilarity = new EditDistanceSimilarity(leftGraph, rightGraph);
-            editDistanceSimilarity.evaluateSimilarity();
-            console.println(editDistanceSimilarity.getResultString(), console.TEXT_ATTR_RESULT);
+        // Make similarity matrix
+        for (CustomGraph graph1 : graphsForComparison) {
+            for (CustomGraph graph2 : graphsForComparison) {
 
-            // Method 2 - Calculate simhashes and evaluate similarity
-            SimhashSimilarity simhashSimilarity = new SimhashSimilarity(leftGraph, rightGraph);
-            simhashSimilarity.evaluateSimilarity();
-            console.println(simhashSimilarity.getResultString(), console.TEXT_ATTR_RESULT);
+                // Method 1 - Evaluate similarity
+                EditDistanceSimilarity editDistanceSimilarity = new EditDistanceSimilarity(graph1, graph2);
+                editDistanceSimilarity.evaluateSimilarity();
+                console.println(editDistanceSimilarity.getResultString(), console.TEXT_ATTR_RESULT);
+
+                // Method 2 - Calculate simhashes and evaluate similarity
+                SimhashSimilarity simhashSimilarity = new SimhashSimilarity(graph1, graph2);
+                simhashSimilarity.evaluateSimilarity();
+                console.println(simhashSimilarity.getResultString(), console.TEXT_ATTR_RESULT);
+            }
         }
-        else {
-            // Get focus to graphs tab.
-            tabPane.getSelectionModel().select(graphsTab);
-
-            Dialogs.missingGraphToCompareErrorDialog();
-        }
-        */
     }
 
 
@@ -332,6 +271,9 @@ public class MainStageController implements Initializable {
     private void removeAllGraphsFromComparison() {
         tilePane.getChildren().clear();
         graphsForComparison.clear();
+        for (GraphCatalogItem item : graphCatalog.getItems()) {
+            item.setSelected(false);
+        }
     }
 
     private void disableMenuItemsAvailability() {
@@ -381,10 +323,8 @@ public class MainStageController implements Initializable {
                 }));
 
         // Check existence of catalog file
-        catalogFile = new File(CATALOG_FILE_PATH);
-        if (catalogFile.exists()) {
-            GraphCatalogPersistence catalogReader = new GraphCatalogPersistence();
-            graphCatalog = catalogReader.readFromFile(catalogFile);
+        if (graphCatalogFileExists()) {
+            graphCatalog = readGraphCatalogFile();
         } else {
             graphCatalog = new GraphCatalog();
             console.println("Catalog file not found! Catalog will be empty.", console.TEXT_ATTR_ERROR);

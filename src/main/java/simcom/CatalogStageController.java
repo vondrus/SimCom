@@ -57,41 +57,51 @@ public class CatalogStageController implements Initializable {
         this.graphsSelectedToCompare = new boolean[graphCatalog.size()];
         this.selectable = selectable;
 
-        if (selectable) {
-            label.setText("Mark selected graphs by mouse click and then press the button.");
-            defaultButton.setText("Add for comparison");
-        } else {
-            label.setText("To select graphs for comparison choose item Graph in main menu.");
-            defaultButton.setText("OK");
-        }
-
+        // Graph pictures (ImageView + Label -> StackPane -> Button)
         Button[] buttons = new Button[graphsSelectedToCompare.length];
         for (int i = 0; i < buttons.length; i++) {
-            buttons[i] = new Button();
 
-            ImageView imageView = new ImageView(graphCatalog.getItems().get(i).getImage());
-            imageView.setFitWidth(IMAGE_VIEW_FIT_WIDTH);
-            imageView.setFitHeight(IMAGE_VIEW_FIT_HEIGHT);
-            imageView.setPreserveRatio(true);
-            imageView.setSmooth(true);
-            imageView.setCache(true);
-            imageView.setCacheHint(CacheHint.SCALE);
+            GraphCatalogItem item = graphCatalog.getItems().get(i);
+            if (! item.isSelected()) {
+                buttons[i] = new Button();
 
+                ImageView imageView = new ImageView(item.getImage());
+                imageView.setFitWidth(IMAGE_VIEW_FIT_WIDTH);
+                imageView.setFitHeight(IMAGE_VIEW_FIT_HEIGHT);
+                imageView.setPreserveRatio(true);
+                imageView.setSmooth(true);
+                imageView.setCache(true);
+                imageView.setCacheHint(CacheHint.SCALE);
 
-            Label title = new Label(' ' + graphCatalog.getItems().get(i).getGraph().getName());
-            title.setStyle("-fx-padding: 4");
-            StackPane.setAlignment(title, Pos.TOP_LEFT);
-            StackPane stackPane = new StackPane();
-            stackPane.getChildren().addAll(imageView, title);
+                Label title = new Label(' ' + item.getGraph().getName());
+                title.setStyle("-fx-padding: 4");
+                StackPane.setAlignment(title, Pos.TOP_LEFT);
+                StackPane stackPane = new StackPane();
+                stackPane.getChildren().addAll(imageView, title);
 
-            buttons[i].setGraphic(stackPane);
-            buttons[i].setId("GraphTile");
+                buttons[i].setGraphic(stackPane);
+                buttons[i].setId("GraphTile");
 
-            final int j = i;
-            final StackPane sp = stackPane;
-            buttons[i].setOnAction(event -> buttonsOnClickAction(j, sp));
+                final int j = i;
+                final StackPane sp = stackPane;
+                buttons[i].setOnAction(event -> buttonsOnClickAction(j, sp));
 
-            tilePane.getChildren().add(buttons[i]);
+                tilePane.getChildren().add(buttons[i]);
+            }
+        }
+
+        // Info label + default button
+        if (tilePane.getChildren().size() > 0) {
+            if (selectable) {
+                label.setText("Mark selected graphs by mouse click and then press the button.");
+                defaultButton.setText("Add for comparison");
+            } else {
+                label.setText("To select graphs for comparison choose item Graph in main menu.");
+                defaultButton.setText("OK");
+            }
+        } else {
+            label.setText("All graphs from catalog have been already selected for comparison.");
+            defaultButton.setText("Close");
         }
 
     }
