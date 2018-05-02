@@ -1,6 +1,5 @@
 package simcom.SimhashSimilarity;
 
-import com.sun.javafx.binding.StringFormatter;
 import simcom.CustomGraph;
 import simcom.CustomGraphVertex;
 import simcom.SimilarityMeasure.SimilarityMeasure;

@@ -11,7 +11,7 @@ import static simcom.GraphCatalogPersistence.readFromFile;
 import static simcom.GraphCatalogPersistence.writeToFile;
 
 class GraphCatalogUtility {
-    private static File catalogFile = new File("catalog.bin");
+    private static File catalogFile = new File(System.getProperty("user.home") + File.separator + "catalog.bin");
 
     private static GraphImporter<CustomGraphVertex, CustomGraphEdge> createImporter() {
         VertexProvider<CustomGraphVertex> vertexProvider
@@ -101,11 +101,11 @@ class GraphCatalogUtility {
     }
 
     static boolean graphCatalogFileExists() {
-        return catalogFile.exists();
+        return catalogFile.exists() && !catalogFile.isDirectory();
     }
 
     static void deleteGraphCatalogFile() {
-        if (catalogFile.exists()) {
+        if (graphCatalogFileExists()) {
             if (! catalogFile.delete()) {
                 Dialogs.ioErrorDialog();
             }

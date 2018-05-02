@@ -6,7 +6,6 @@
 <?import javafx.scene.control.*?>
 <?import simcom.Console?>
 
-
 <GridPane xmlns:fx="http://javafx.com/fxml/1" id="GridPane1" stylesheets="/scenes/MainStage.css" xmlns="http://javafx.com/javafx/8" fx:controller="simcom.MainStageController">
 
     <MenuBar GridPane.columnIndex="0" GridPane.rowIndex="0" >
@@ -64,6 +63,7 @@
     </MenuBar>
 
     <TabPane id="TabPane" fx:id="tabPane" GridPane.columnIndex="0" GridPane.rowIndex="1" tabClosingPolicy="UNAVAILABLE" >
+
         <Tab id="GraphsTab" fx:id="graphsTab" closable="false" text="Graphs">
             <ScrollPane id="TilePaneScrollPane" fx:id="tilePaneScrollPane" minWidth="1854" maxWidth="1854" minHeight="1000" maxHeight="1000">
                 <TilePane id="TilePane" fx:id="tilePane" hgap="4.0" vgap="4.0" prefColumns="3" />
@@ -72,6 +72,7 @@
                 </padding>
             </ScrollPane>
         </Tab>
+
         <Tab id="ConsoleTab" fx:id="consoleTab" closable="false" text="Console">
             <ScrollPane id="ConsoleScrollPane" fx:id="consoleScrollPane">
                 <Console id="Console" fx:id="console" lineSpacing="2.0">
@@ -79,6 +80,11 @@
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                     </padding>
                 </Console>
+            </ScrollPane>
+        </Tab>
+
+        <Tab id="SummaryTab" closable="false" text="Summary">
+            <ScrollPane id="WebViewScrollPane" fx:id="webViewScrollPane" fitToHeight="true" fitToWidth="true">
             </ScrollPane>
         </Tab>
     </TabPane>

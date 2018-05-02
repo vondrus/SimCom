@@ -151,10 +151,6 @@ class Dialogs {
         genericInformationDialog("The catalog is empty for now.", null);
     }
 
-    static void graphIsLoadedInformationDialog() {
-        genericInformationDialog("The selected graph is already loaded.", null);
-    }
-
     static void noDotFileFoundInformationDialog(String directory) {
         genericInformationDialog("No DOT file found in selected directory.", directory);
     }

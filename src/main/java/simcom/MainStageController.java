@@ -2,6 +2,7 @@ package simcom;
 
 import java.io.File;
 import java.net.URL;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
@@ -17,6 +18,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.DirectoryChooser;
 import javafx.collections.ListChangeListener;
@@ -31,6 +34,7 @@ public class MainStageController implements Initializable {
     private ArrayList<CustomGraph> graphsForComparison = new ArrayList<>();
     private GraphCatalog graphCatalog;
     private String lastOpenDirectory;
+    private WebEngine webEngine;
 
     // FXML: Containers
     @FXML
@@ -47,6 +51,8 @@ public class MainStageController implements Initializable {
     private Console console;
     @FXML
     private ScrollPane consoleScrollPane;
+    @FXML
+    private ScrollPane webViewScrollPane;
 
     // FXML: Menu Items
     @FXML
@@ -306,6 +312,18 @@ public class MainStageController implements Initializable {
         }
     }
 
+    private void loadSummary() {
+        final File summaryFile = new File(System.getProperty("user.home") + File.separator + "summary.html");
+        if (summaryFile.exists() && !summaryFile.isDirectory()) {
+            try {
+                final URL urlSummary = summaryFile.toURI().toURL();
+                webEngine.load(urlSummary.toExternalForm());
+            } catch (MalformedURLException e) {
+                Dialogs.exceptionDialog(e);
+            }
+        }
+    }
+
 
     // Initialization --------------------------------------------------------------------------------------------------
 
@@ -340,6 +358,12 @@ public class MainStageController implements Initializable {
         // Set appropriate state of some menu items
         disableMenuItemsAvailability();
         setMenuItemsAvailability();
+
+        // WebView init
+        WebView webView = new WebView();
+        webEngine = webView.getEngine();
+        webViewScrollPane.setContent(webView);
+        loadSummary();
 
         // Let's go...
         console.println("Ready.", console.TEXT_ATTR_NORMAL);
