@@ -8,7 +8,12 @@ public class SandBox {
     }
 
     public static void main(String[] args) {
-
+        // Pascal's triangle
         System.out.println("PascalTriangle(5, 3) = " + pascalTriangle(5, 3));
+
+        // Get the temporary directory and print it.
+        String property = "java.io.tmpdir";
+        String tempDir = System.getProperty(property);
+        System.out.println("OS temporary directory is " + tempDir);
     }
 }

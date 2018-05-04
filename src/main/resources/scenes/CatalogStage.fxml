@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane id="GridPane1" stylesheets="/scenes/CatalogStage.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="simcom.CatalogStageController" >
+<GridPane id="GridPane1" stylesheets="/styles/CatalogStage.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="simcom.CatalogStageController" >
     <rowConstraints>
         <RowConstraints minHeight="300" maxHeight="Infinity" />
         <RowConstraints minHeight="100" maxHeight="100" />

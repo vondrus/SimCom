@@ -1,8 +1,53 @@
 package simcom;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Comparator;
+
 public class AuxiliaryUtility {
+    private static final String APPLICATION_NAME = "SimCom - Similarity Comparator";
+
+    private static final String CATALOG_FILENAME = "catalog.bin";
+    private static final String SUMMARY_HTML_FILENAME = "summary.html";
+    private static final String SUMMARY_CSS_FILENAME = "summary.css";
+
+    private static final String TMP_ROOT_DIRECTORY = System.getProperty("java.io.tmpdir");
+    private static final String TMP_SIMCOM_DIRECTORY = "SimCom";
+    private static final String IMAGES_DIRECTORY = TMP_ROOT_DIRECTORY
+                                                 + TMP_SIMCOM_DIRECTORY + File.separator + "images" + File.separator;
+    private static final String STYLES_DIRECTORY = TMP_ROOT_DIRECTORY
+                                                 + TMP_SIMCOM_DIRECTORY + File.separator + "styles" + File.separator;
     private static boolean debugMode;
     private static boolean resizableStage;
+    private static String dotExecFilename;
+    private static String dotExecPathname;
+
+    static String getApplicationName() {
+        return APPLICATION_NAME;
+    }
+
+    static String getSummaryCssFilename() {
+        return SUMMARY_CSS_FILENAME;
+    }
+
+    static String getSummaryHtmlPathname() {
+        return TMP_ROOT_DIRECTORY + TMP_SIMCOM_DIRECTORY + File.separator + SUMMARY_HTML_FILENAME;
+    }
+
+    static String getCatalogFilename() {
+        return CATALOG_FILENAME;
+    }
+
+    static String getImagesDirectory() {
+        return IMAGES_DIRECTORY;
+    }
+
+    static String getStylesDirectory() {
+        return STYLES_DIRECTORY;
+    }
 
     static boolean isDebugMode() {
         return debugMode;
@@ -20,6 +65,14 @@ public class AuxiliaryUtility {
         resizableStage = true;
     }
 
+    static String getDotExecPathname() {
+        return dotExecPathname;
+    }
+
+    private static void setDotExecPathname(String dotExecPathname) {
+        AuxiliaryUtility.dotExecPathname = dotExecPathname;
+    }
+
     static void parseCommandLineParameters(String[] args) {
         for (String s : args) {
             if (s.equals("debug")) {
@@ -29,6 +82,56 @@ public class AuxiliaryUtility {
                 setResizableStageOn();
             }
         }
+    }
+
+    private static String findExecutableOnPath(String filename) {
+        for (String dirname : System.getenv("PATH").split(File.pathSeparator)) {
+            File file = new File(dirname, filename);
+            if (file.isFile() && file.canExecute()) {
+                return file.getAbsolutePath();
+            }
+        }
+        return null;
+    }
+
+    static boolean dotExecutableExists() {
+        String dotExecPathname = AuxiliaryUtility.findExecutableOnPath(dotExecFilename);
+        if (dotExecPathname != null) {
+            AuxiliaryUtility.setDotExecPathname(dotExecPathname);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    static boolean isOSTypeSupported() {
+        String os = System.getProperty("os.name").toLowerCase();
+        if (os.contains("win")){
+            dotExecFilename = "dot.exe";
+        }
+        else if (os.contains("nix") || os.contains("aix") || os.contains("nux")){
+            dotExecFilename = "dot";
+        }
+        else {
+            return false;
+        }
+        return true;
+    }
+
+    static void deleteTemporaryDirectories() {
+        Path path = Paths.get(TMP_ROOT_DIRECTORY).resolve(TMP_SIMCOM_DIRECTORY);
+        try {
+            Files.walk(path)
+                 .sorted(Comparator.reverseOrder())
+                 .map(Path::toFile)
+                 .forEach(File::delete);
+        } catch (IOException e) {
+            Dialogs.exceptionDialog(e);
+        }
+    }
+
+    static boolean makeTemporaryDirectories() {
+        return new File(IMAGES_DIRECTORY).mkdirs() && new File(STYLES_DIRECTORY).mkdirs();
     }
 
     public static String ByteArrayAsBinLittleEndian (byte[] a) {

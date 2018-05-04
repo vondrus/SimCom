@@ -275,6 +275,11 @@ public class MainStageController implements Initializable {
                 }
             }
         }
+
+        // Build summary HTML page
+        Summary summary = new Summary(graphsForComparison);
+        summary.build();
+        loadSummary();
     }
 
 
@@ -313,7 +318,7 @@ public class MainStageController implements Initializable {
     }
 
     private void loadSummary() {
-        final File summaryFile = new File(System.getProperty("user.home") + File.separator + "summary.html");
+        final File summaryFile = new File(AuxiliaryUtility.getSummaryHtmlPathname());
         if (summaryFile.exists() && !summaryFile.isDirectory()) {
             try {
                 final URL urlSummary = summaryFile.toURI().toURL();

@@ -136,7 +136,8 @@ class Dialogs {
     }
 
     static void aboutInformationDialog() {
-        genericInformationDialog("SimCom - Similarity Comparator", String.format("%s%n%s%n%s",
+        genericInformationDialog(AuxiliaryUtility.getApplicationName(),
+                String.format("%s%n%s%n%s",
                 "Copyright \u00a9 2018 Petr Vondrus",
                 "Czech Technical University in Prague",
                 "Faculty of Electrical Engineering"
@@ -163,8 +164,16 @@ class Dialogs {
         genericErrorDialog("Cannot add selected graph to the catalog.", "Graph contains more than one component.");
     }
 
+    static void canNotMakeTemporaryDirectories() {
+        genericErrorDialog("Can not make temporary directories!", null);
+    }
+
     static void dotExecutableNotFoundErrorDialog() {
         genericErrorDialog("DOT executable file not found!", null);
+    }
+
+    static void notSupportedOSType() {
+        genericErrorDialog("This type of operating system is not supported!", null);
     }
 
     static void ioErrorDialog() {

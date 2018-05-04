@@ -6,7 +6,7 @@
 <?import javafx.scene.control.*?>
 <?import simcom.Console?>
 
-<GridPane xmlns:fx="http://javafx.com/fxml/1" id="GridPane1" stylesheets="/scenes/MainStage.css" xmlns="http://javafx.com/javafx/8" fx:controller="simcom.MainStageController">
+<GridPane xmlns:fx="http://javafx.com/fxml/1" id="GridPane1" stylesheets="/styles/MainStage.css" xmlns="http://javafx.com/javafx/8" fx:controller="simcom.MainStageController">
 
     <MenuBar GridPane.columnIndex="0" GridPane.rowIndex="0" >
         <Menu mnemonicParsing="false" text="File">

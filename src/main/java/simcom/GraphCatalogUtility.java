@@ -11,7 +11,7 @@ import static simcom.GraphCatalogPersistence.readFromFile;
 import static simcom.GraphCatalogPersistence.writeToFile;
 
 class GraphCatalogUtility {
-    private static File catalogFile = new File(System.getProperty("user.home") + File.separator + "catalog.bin");
+    private static File catalogFile = new File(System.getProperty("user.home") + File.separator + AuxiliaryUtility.getCatalogFilename());
 
     private static GraphImporter<CustomGraphVertex, CustomGraphEdge> createImporter() {
         VertexProvider<CustomGraphVertex> vertexProvider
@@ -29,9 +29,9 @@ class GraphCatalogUtility {
         return name.substring(0, Math.min(name.length(), 16));
     }
 
-    /* POZOR!
-       org.jgrapht.ext DOTImporter<V,E> pripousti ve vstupnim souboru v definicich hran jako oddelovac vrcholu
-       pouze tuto syntaxi: vertex1 + " -> " + vertex2
+    /* ATTENTION!
+       org.jgrapht.ext DOTImporter<V,E> admits in input file in edges definitions as a vertex separator
+       only this syntax: vertex1 + " -> " + vertex2
      */
     private static CustomGraph loadGraphFromDotFile(File filepath) {
         CustomGraph graph = new CustomGraph(CustomGraphEdge.class, createGraphName(filepath));

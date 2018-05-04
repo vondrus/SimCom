@@ -49,7 +49,7 @@ public class CustomGraph extends SimpleDirectedGraph<CustomGraphVertex, CustomGr
     }
 
     Image getImage() throws IOException {
-        final ProcessBuilder builder = new ProcessBuilder("/usr/bin/dot", "-Tpng");
+        final ProcessBuilder builder = new ProcessBuilder(AuxiliaryUtility.getDotExecPathname(), "-Tpng");
         final Process process = builder.start();
         final Image[] image = new Image[1];
 
@@ -61,13 +61,25 @@ public class CustomGraph extends SimpleDirectedGraph<CustomGraphVertex, CustomGr
 
         OutputStream outStream = process.getOutputStream();
         PrintWriter pWriter = new PrintWriter(outStream);
-        // TODO: Refactor (platform dependent newlines)
-        pWriter.println("digraph name {\n\tratio=compress;\n\tnode [shape=circle, style=filled, fillcolor=\"lightgray\", fontcolor=\"black\"];\n");
 
+        // Header of file
+        pWriter.println(String.format(
+                "digraph %s {%n" +
+                "\tratio=compress;%n" +
+                "\tnode [shape=circle, style=filled, fillcolor=\"lightgray\", fontcolor=\"black\"];%n",
+                name
+        ));
+
+        // Edges (body)
         for (CustomGraphEdge edge : this.edgeSet()) {
-            pWriter.println(this.getEdgeSource(edge) + " -> " + this.getEdgeTarget(edge) + ";\n");
+            pWriter.println(String.format(
+                    "%s -> %s;%n",
+                    this.getEdgeSource(edge),
+                    this.getEdgeTarget(edge)
+            ));
         }
 
+        // End of file
         pWriter.println('}');
         pWriter.flush();
         pWriter.close();
