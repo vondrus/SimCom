@@ -1,8 +1,8 @@
-ScrollPane { -fx-background-color: gray;
-             -fx-background: gray;
+ScrollPane { -fx-background-color: Gainsboro;
+             -fx-background: Gainsboro;
            }
 
-TilePane { -fx-background-color: gray; }
+TilePane { -fx-background-color: Gainsboro; }
 
 StackPane { -fx-min-height: 288px;
             -fx-max-height: 288px;

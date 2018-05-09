@@ -1,9 +1,9 @@
-ScrollPane { -fx-background-color: white;
-             -fx-background: white;
+ScrollPane { -fx-background-color: Gainsboro;
+             -fx-background: Gainsboro;
              -fx-border-width: 0
            }
 
-TilePane { -fx-background-color: white; }
+TilePane { -fx-background-color: Gainsboro; }
 
 StackPane#StackPane { -fx-min-height: 605px;
                       -fx-max-height: 605px;
@@ -24,7 +24,9 @@ VBox { -fx-background-color: white;
        -fx-border-width: 1;
      }
 
-Text  { -fx-font-family: monospace; }
+Text  { -fx-font-family: monospace;
+        -fx-font-weight: bold;
+}
 
 
 .iconQuit > .label { -fx-graphic: url("../icons/iconQuit.png"); }

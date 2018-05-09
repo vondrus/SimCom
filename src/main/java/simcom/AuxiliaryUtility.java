@@ -20,10 +20,17 @@ public class AuxiliaryUtility {
                                                  + TMP_SIMCOM_DIRECTORY + File.separator + "images" + File.separator;
     private static final String STYLES_DIRECTORY = TMP_ROOT_DIRECTORY
                                                  + TMP_SIMCOM_DIRECTORY + File.separator + "styles" + File.separator;
+
+    private static final String HTML_BLANK_PAGE =
+            "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"></head>" +
+            "<body style=\"background-color: Gainsboro; font-family: Arial;\">" +
+            "<p>Content will be added after graphs comparing.</p></body></html>";
+
     private static boolean debugMode;
     private static boolean resizableStage;
     private static String dotExecFilename;
     private static String dotExecPathname;
+    private static String httpUserAgent;
 
     static String getApplicationName() {
         return APPLICATION_NAME;
@@ -69,8 +76,20 @@ public class AuxiliaryUtility {
         return dotExecPathname;
     }
 
+    static String getHttpUserAgent() {
+        return httpUserAgent;
+    }
+
+    static void setHttpUserAgent(String httpUserAgent) {
+        AuxiliaryUtility.httpUserAgent = httpUserAgent;
+    }
+
     private static void setDotExecPathname(String dotExecPathname) {
         AuxiliaryUtility.dotExecPathname = dotExecPathname;
+    }
+
+    static String getHtmlBlankPage() {
+        return HTML_BLANK_PAGE;
     }
 
     static void parseCommandLineParameters(String[] args) {

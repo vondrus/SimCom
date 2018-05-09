@@ -318,6 +318,7 @@ public class MainStageController implements Initializable {
     }
 
     private void loadSummary() {
+        // Load content from file
         final File summaryFile = new File(AuxiliaryUtility.getSummaryHtmlPathname());
         if (summaryFile.exists() && !summaryFile.isDirectory()) {
             try {
@@ -326,6 +327,10 @@ public class MainStageController implements Initializable {
             } catch (MalformedURLException e) {
                 Dialogs.exceptionDialog(e);
             }
+        }
+        // Load content from memory (init blank page)
+        else {
+            webEngine.loadContent(AuxiliaryUtility.getHtmlBlankPage());
         }
     }
 
@@ -368,6 +373,7 @@ public class MainStageController implements Initializable {
         WebView webView = new WebView();
         webEngine = webView.getEngine();
         webViewScrollPane.setContent(webView);
+        AuxiliaryUtility.setHttpUserAgent(webEngine.getUserAgent());
         loadSummary();
 
         // Let's go...

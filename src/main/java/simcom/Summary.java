@@ -1,10 +1,5 @@
 package simcom;
 
-import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.image.Image;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -13,6 +8,12 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.awt.image.BufferedImage;
+
+import javax.imageio.ImageIO;
+
+import javafx.scene.image.Image;
+import javafx.embed.swing.SwingFXUtils;
 
 public class Summary {
     private FileOutputStream summaryOutputStream;
@@ -43,7 +44,7 @@ public class Summary {
                 "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\">" +
                 "<title>SimCom - Summary of calculated similarities of selected graphs</title>" +
                 "<link rel=\"stylesheet\" href=\"styles/summary.css?v=1.0\"></head>" +
-                "<body><table><tr id=\"headerCell\"><td colspan=\"%d\">" +
+                "<body><table><tr id=\"headerCell1\"><td colspan=\"%d\">" +
                 "<div id=\"headerLine1\">Summary of calculated similarities of selected graphs</div>" +
                 "<div id=\"headerLine2\">Created %s at %s</div></td></tr>%n";
 
@@ -58,7 +59,7 @@ public class Summary {
         );
 
         // II. Inner HTML part -----------------------------------------------
-        StringBuilder innerHtmlPart = new StringBuilder(String.format("<tr id=\"headerCell\"><td></td>%n"));
+        StringBuilder innerHtmlPart = new StringBuilder(String.format("<tr id=\"headerCell2\"><td></td>%n"));
         for (CustomGraph graph : graphsForComparison) {
 
             // Save graph picture to file
@@ -69,15 +70,32 @@ public class Summary {
             }
 
             // Create cell of horizontal header (graphs)
-            innerHtmlPart.append(String.format("<td><div><img src=\"%s\"></div><div>%s</div></td>%n",
+            innerHtmlPart.append(String.format("<td><div><img src=\"%s\" /></div><div>%s</div></td>%n",
                     "images" + File.separator + graph.getName() + ".png",
                     graph.getName()
             ));
         }
         innerHtmlPart.append(String.format("</tr>%n"));
 
+        // Make body of the summary (row by row)
+        for (CustomGraph graph1 : graphsForComparison) {
+            // Graph picture at first column
+            innerHtmlPart.append(String.format("<tr id=\"headerCell2\"><td><div><img src=\"%s\" /></div><div>%s</div></td>%n",
+                    "images" + File.separator + graph1.getName() + ".png",
+                    graph1.getName()
+            ));
+
+            // Values of similarities
+            for (CustomGraph graph2 : graphsForComparison) {
+                innerHtmlPart.append(String.format("<td></td>"));
+            }
+            innerHtmlPart.append(String.format("</tr>%n"));
+        }
+
         // III. Closing HTML part --------------------------------------------
-        final String closingHtmlPart = "</table></body></html>";
+        final String closingHtmlPart = String.format("</table><p>HTTP User-Agent: %s</p></body></html>",
+                AuxiliaryUtility.getHttpUserAgent()
+        );
 
         // Write all parts to output stream
         try {
