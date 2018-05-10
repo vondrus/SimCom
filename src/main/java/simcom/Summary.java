@@ -9,6 +9,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 
@@ -18,9 +20,11 @@ import javafx.embed.swing.SwingFXUtils;
 public class Summary {
     private FileOutputStream summaryOutputStream;
     private ArrayList<CustomGraph> graphsForComparison;
+    private Map<String, String> imageResize;
 
     public Summary(ArrayList<CustomGraph> graphsForComparison) {
         this.graphsForComparison = graphsForComparison;
+        this.imageResize = new HashMap<>();
         try {
             summaryOutputStream = new FileOutputStream(AuxiliaryUtility.getSummaryHtmlPathname(), false);
         } catch (FileNotFoundException e) {
@@ -28,9 +32,30 @@ public class Summary {
         }
     }
 
-    private static void saveImageToFile(Image image, String name) {
+    private void saveImageToFile(Image image, String name) {
+        final int MAX_RESIZE_IMAGE_WIDTH = 192;
+        final int MAX_RESIZE_IMAGE_HEIGHT = 120;
+        final String ID_RESIZE_IMAGE_WIDTH = "id=\"resWidth\"";
+        final String ID_RESIZE_IMAGE_HEIGHT = "id=\"resHeight\"";
+
         File outputFile = new File(AuxiliaryUtility.getImagesDirectory() + name + ".png");
         BufferedImage bImage = SwingFXUtils.fromFXImage(image, null);
+
+        // Notice graph picture resize type to map
+        final int difWidth = bImage.getWidth() - MAX_RESIZE_IMAGE_WIDTH;
+        final int difHeight = bImage.getHeight() - MAX_RESIZE_IMAGE_HEIGHT;
+
+        if ((difWidth <= 0) && (difHeight <= 0)) {
+            imageResize.put(name, "");
+        }
+        else if (difWidth >= difHeight) {
+            imageResize.put(name, ID_RESIZE_IMAGE_WIDTH);
+        }
+        else {
+            imageResize.put(name, ID_RESIZE_IMAGE_HEIGHT);
+        }
+
+        // Save image to file
         try {
             ImageIO.write(bImage, "png", outputFile);
         } catch (IOException e) {
@@ -70,7 +95,8 @@ public class Summary {
             }
 
             // Create cell of horizontal header (graphs)
-            innerHtmlPart.append(String.format("<td><div><img src=\"%s\" /></div><div>%s</div></td>%n",
+            innerHtmlPart.append(String.format("<td><div><img %s src=\"%s\" /></div><div>%s</div></td>%n",
+                    imageResize.get(graph.getName()),
                     "images" + File.separator + graph.getName() + ".png",
                     graph.getName()
             ));
@@ -80,7 +106,8 @@ public class Summary {
         // Make body of the summary (row by row)
         for (CustomGraph graph1 : graphsForComparison) {
             // Graph picture at first column
-            innerHtmlPart.append(String.format("<tr id=\"headerCell2\"><td><div><img src=\"%s\" /></div><div>%s</div></td>%n",
+            innerHtmlPart.append(String.format("<tr id=\"headerCell2\"><td><div><img %s src=\"%s\" /></div><div>%s</div></td>%n",
+                    imageResize.get(graph1.getName()),
                     "images" + File.separator + graph1.getName() + ".png",
                     graph1.getName()
             ));

@@ -57,7 +57,12 @@ p {
     color: DimGray;
 }
 
-img {
-    width: 100px;
+img#resWidth {
+    width: 192px;
     height: auto;
+}
+
+img#resHeight {
+    width: auto;
+    height: 120px;
 }
