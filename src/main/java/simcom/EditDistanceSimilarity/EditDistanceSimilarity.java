@@ -136,6 +136,8 @@ public class EditDistanceSimilarity extends SimilarityMeasure {
 
         double similarity = (depth * productOfGammaFinals) / sumOfGammaFinals;
 
+        resultArrayList.add(similarity);
+
         debugString.append(String.format(
                 "%n" +
                 "sumOfGammaFinals     = %f%n" +

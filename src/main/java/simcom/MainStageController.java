@@ -250,6 +250,8 @@ public class MainStageController implements Initializable {
 
     @FXML
     private void menuItemCompareGraphsOnAction() {
+        ArrayList<Double> editDistanceResults = new ArrayList<>();
+        ArrayList<Double> simhashResults = new ArrayList<>();
 
         // Get focus to console tab
         tabPane.getSelectionModel().select(consoleTab);
@@ -261,6 +263,7 @@ public class MainStageController implements Initializable {
                 // Method 1 - Evaluate similarity
                 EditDistanceSimilarity editDistanceSimilarity = new EditDistanceSimilarity(graph1, graph2, "Edit distance");
                 editDistanceSimilarity.evaluateSimilarity();
+                editDistanceResults.addAll(editDistanceSimilarity.getResultArrayList());
                 console.println(editDistanceSimilarity.getResultString(), console.TEXT_ATTR_RESULT);
                 if (AuxiliaryUtility.isDebugMode()) {
                     System.out.println(editDistanceSimilarity.getDebugString());
@@ -269,6 +272,7 @@ public class MainStageController implements Initializable {
                 // Method 2 - Calculate simhashes and evaluate similarity
                 SimhashSimilarity simhashSimilarity = new SimhashSimilarity(graph1, graph2, "SimHash");
                 simhashSimilarity.evaluateSimilarity();
+                simhashResults.addAll(simhashSimilarity.getResultArrayList());
                 console.println(simhashSimilarity.getResultString(), console.TEXT_ATTR_RESULT);
                 if (AuxiliaryUtility.isDebugMode()) {
                     System.out.println(simhashSimilarity.getDebugString());
@@ -277,7 +281,7 @@ public class MainStageController implements Initializable {
         }
 
         // Build summary HTML page
-        Summary summary = new Summary(graphsForComparison);
+        Summary summary = new Summary(graphsForComparison, editDistanceResults, simhashResults);
         summary.build();
         loadSummary();
     }
@@ -291,6 +295,7 @@ public class MainStageController implements Initializable {
         for (GraphCatalogItem item : graphCatalog.getItems()) {
             item.setSelected(false);
         }
+        tabPane.getSelectionModel().select(graphsTab);
     }
 
     private void disableMenuItemsAvailability() {

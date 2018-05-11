@@ -141,11 +141,16 @@ public class SimhashSimilarity extends SimilarityMeasure {
                     simhashTable1.get(hashAlgorithm).getSimhashAsBytes(),
                     simhashTable2.get(hashAlgorithm).getSimhashAsBytes()
             );
+
+            double similarity = 1 - (hammingDistance / (double) simhashTable1.get(hashAlgorithm).getSimhashLength());
+
+            resultArrayList.add(similarity);
+
             evaluationResults.get(hashAlgorithm).setHammingDistance(hammingDistance);
-            evaluationResults.get(hashAlgorithm).setSimilarity(1 - (hammingDistance / (double) simhashTable1.get(hashAlgorithm).getSimhashLength()));
+            evaluationResults.get(hashAlgorithm).setSimilarity(similarity);
         }
 
-        // Assemble result string
+        // Fill up the result string
         for (HashAlgorithm hashAlgorithm : HashAlgorithm.values()) {
             String result = String.format(
                     "Hash algorithm: %s (%s-bit)%n" +

@@ -16,13 +16,21 @@ import javax.imageio.ImageIO;
 
 import javafx.scene.image.Image;
 import javafx.embed.swing.SwingFXUtils;
+import simcom.SimhashSimilarity.HashAlgorithm;
 
 public class Summary {
-    private FileOutputStream summaryOutputStream;
+    private final int MAX_RESIZE_IMAGE_WIDTH = 192;
+    private final int MAX_RESIZE_IMAGE_HEIGHT = 120;
+
     private ArrayList<CustomGraph> graphsForComparison;
+    private ArrayList<Double> editDistanceResults;
+    private ArrayList<Double> simhashResults;
+    private FileOutputStream summaryOutputStream;
     private Map<String, String> imageResize;
 
-    public Summary(ArrayList<CustomGraph> graphsForComparison) {
+    public Summary(ArrayList<CustomGraph> graphsForComparison, ArrayList<Double> editDistanceResults, ArrayList<Double> simhashResults) {
+        this.editDistanceResults = editDistanceResults;
+        this.simhashResults = simhashResults;
         this.graphsForComparison = graphsForComparison;
         this.imageResize = new HashMap<>();
         try {
@@ -33,8 +41,6 @@ public class Summary {
     }
 
     private void saveImageToFile(Image image, String name) {
-        final int MAX_RESIZE_IMAGE_WIDTH = 192;
-        final int MAX_RESIZE_IMAGE_HEIGHT = 120;
         final String ID_RESIZE_IMAGE_WIDTH = "id=\"resWidth\"";
         final String ID_RESIZE_IMAGE_HEIGHT = "id=\"resHeight\"";
 
@@ -95,40 +101,81 @@ public class Summary {
             }
 
             // Create cell of horizontal header (graphs)
-            innerHtmlPart.append(String.format("<td><div><img %s src=\"%s\" /></div><div>%s</div></td>%n",
+            innerHtmlPart.append(String.format(
+                    "<td width=\"%d\" height=\"%d\"><div>" +
+                    "<img %s src=\"%s\" /></div><div>%s</div></td>%n",
+                    MAX_RESIZE_IMAGE_WIDTH,
+                    MAX_RESIZE_IMAGE_HEIGHT,
                     imageResize.get(graph.getName()),
                     "images" + File.separator + graph.getName() + ".png",
                     graph.getName()
             ));
+
         }
         innerHtmlPart.append(String.format("</tr>%n"));
 
         // Make body of the summary (row by row)
+        HashAlgorithm[] hashAlgorithms = HashAlgorithm.values();
+        int numberOfSimhashHashAlgorithms = hashAlgorithms.length;
+        int resultIndex = 0;
+
         for (CustomGraph graph1 : graphsForComparison) {
+
             // Graph picture at first column
-            innerHtmlPart.append(String.format("<tr id=\"headerCell2\"><td><div><img %s src=\"%s\" /></div><div>%s</div></td>%n",
+            innerHtmlPart.append(String.format(
+                    "<tr id=\"headerCell2\">" +
+                    "<td width=\"%d\" height=\"%d\"><div>" +
+                    "<img %s src=\"%s\" /></div><div>%s</div></td>%n",
+                    MAX_RESIZE_IMAGE_WIDTH,
+                    MAX_RESIZE_IMAGE_HEIGHT,
                     imageResize.get(graph1.getName()),
                     "images" + File.separator + graph1.getName() + ".png",
                     graph1.getName()
             ));
 
             // Values of similarities
-            for (CustomGraph graph2 : graphsForComparison) {
-                innerHtmlPart.append(String.format("<td></td>"));
+            for (CustomGraph ignored : graphsForComparison) {
+                innerHtmlPart.append("<td>");
+
+                // Edit distance method
+                innerHtmlPart.append(String.format("<div>%.4f</div>", editDistanceResults.get(resultIndex)));
+
+                // Simhash method
+                for (int i = 0; i < numberOfSimhashHashAlgorithms; i++) {
+                    innerHtmlPart.append(String.format("<div style=\"color: %s\">%.4f</div>",
+                            hashAlgorithms[i].getSummaryColor(),
+                            simhashResults.get(resultIndex * numberOfSimhashHashAlgorithms + i)
+                    ));
+                }
+
+                resultIndex++;
+                innerHtmlPart.append("</td>");
             }
             innerHtmlPart.append(String.format("</tr>%n"));
         }
 
         // III. Closing HTML part --------------------------------------------
-        final String closingHtmlPart = String.format("</table><p>HTTP User-Agent: %s</p></body></html>",
-                AuxiliaryUtility.getHttpUserAgent()
-        );
+        StringBuilder closingHtmlPart = new StringBuilder(String.format(
+                "<tr id=\"legend\"><td>Legend:</td><td align=\"left\" colspan=\"%d\">",
+                graphsNumber
+        ));
+
+        closingHtmlPart.append("<div style=\"color: Black\">Edit Distance method</div>");
+
+        for (HashAlgorithm hashAlgorithm : hashAlgorithms) {
+            closingHtmlPart.append(String.format("<div style=\"color: %s\">SimHash method (hash algorithm %s)</div>",
+                    hashAlgorithm.getSummaryColor(),
+                    hashAlgorithm.getName()
+            ));
+        }
+
+        closingHtmlPart.append("</td></tr>");
 
         // Write all parts to output stream
         try {
             summaryOutputStream.write(openingHtmlPart.getBytes());
             summaryOutputStream.write(innerHtmlPart.toString().getBytes());
-            summaryOutputStream.write(closingHtmlPart.getBytes());
+            summaryOutputStream.write(closingHtmlPart.toString().getBytes());
             summaryOutputStream.close();
         } catch (IOException e) {
             Dialogs.exceptionDialog(e);

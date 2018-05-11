@@ -1,8 +1,3 @@
-/*
-	http://www.java2s.com/Tutorials/Java/JavaFX_How_to/Image/Save_an_Image_to_a_file.htm
-	https://stackoverflow.com/questions/15685666/changing-image-sizes-proportionally-using-css
- */
-
 body {
     background-color: Gainsboro;
 	text-align: center;
@@ -29,8 +24,13 @@ table {
 	font-weight: bold;
 }
 
+#legend {
+	background-color: Silver;
+	font-weight: bold;
+}
+
 div {
-	padding: 2px;
+	padding: 4px;
 }
 
 div#headerLine1 {
@@ -50,7 +50,7 @@ div#headerLine2 {
 td {
     border-collapse: collapse;
     border: 1px solid black;
-	padding: 5px;
+    padding: 5px;
 }
 
 p {
