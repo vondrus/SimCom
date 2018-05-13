@@ -107,12 +107,28 @@ public class EditDistanceSimilarity extends SimilarityMeasure {
                     new SequenceAlignment(sequenceLabel1, sequenceLabel2, new SimpleFunction());
             debugString.append(alignmentLabel.getDebugString());
 
+            // Adjust the length of sequences in case of zero length one of them
+            int sequenceIndegree1Length = sequenceIndegree1.length;
+            int sequenceIndegree2Length = sequenceIndegree2.length;
+            if (sequenceIndegree1Length == 0) {
+                sequenceIndegree1Length = sequenceIndegree2Length;
+            } else if (sequenceIndegree2Length == 0) {
+                sequenceIndegree2Length = sequenceIndegree1Length;
+            }
+
+            int sequenceOutdegree1Length = sequenceOutdegree1.length;
+            int sequenceOutdegree2Length = sequenceOutdegree2.length;
+            if (sequenceOutdegree1Length == 0) {
+                sequenceOutdegree1Length = sequenceOutdegree2Length;
+            } else if (sequenceOutdegree2Length == 0) {
+                sequenceOutdegree2Length = sequenceIndegree1Length;
+            }
 
             double gammaIndegree = 1 - (alignmentIndegree12.getMinimalEditDistance() + alignmentIndegree21.getMinimalEditDistance())
-                    / (sequenceIndegree1.length + sequenceIndegree2.length);
+                    / (sequenceIndegree1Length + sequenceIndegree2Length);
 
             double gammaOutdegree = 1 - (alignmentOutdegree12.getMinimalEditDistance() + alignmentOutdegree21.getMinimalEditDistance())
-                    / (sequenceOutdegree1.length + sequenceOutdegree2.length);
+                    / (sequenceOutdegree1Length + sequenceOutdegree2Length);
 
             double gammaLabel = 1 - alignmentLabel.getMinimalEditDistance()
                     / max(sequenceLabel1.length, sequenceLabel2.length);

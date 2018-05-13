@@ -4,7 +4,7 @@ import static java.lang.Math.exp;
 import static java.lang.Math.pow;
 
 public class ExponentialFunction implements SimilarityFunction {
-    private final static double PARAMETER_KSI = 0.001;
+    private final static double PARAMETER_KSI = 0;
     private final static double PARAMETER_SIGMA_1 = 1.0;
     private final static double PARAMETER_SIGMA_2 = 5.0;
 

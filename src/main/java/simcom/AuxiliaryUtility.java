@@ -16,9 +16,9 @@ public class AuxiliaryUtility {
 
     private static final String TMP_ROOT_DIRECTORY = System.getProperty("java.io.tmpdir");
     private static final String TMP_SIMCOM_DIRECTORY = "SimCom";
-    private static final String IMAGES_DIRECTORY = TMP_ROOT_DIRECTORY
+    private static final String IMAGES_DIRECTORY = TMP_ROOT_DIRECTORY + File.separator
                                                  + TMP_SIMCOM_DIRECTORY + File.separator + "images" + File.separator;
-    private static final String STYLES_DIRECTORY = TMP_ROOT_DIRECTORY
+    private static final String STYLES_DIRECTORY = TMP_ROOT_DIRECTORY + File.separator
                                                  + TMP_SIMCOM_DIRECTORY + File.separator + "styles" + File.separator;
 
     private static final String HTML_BLANK_PAGE =
@@ -41,7 +41,7 @@ public class AuxiliaryUtility {
     }
 
     static String getSummaryHtmlPathname() {
-        return TMP_ROOT_DIRECTORY + TMP_SIMCOM_DIRECTORY + File.separator + SUMMARY_HTML_FILENAME;
+        return TMP_ROOT_DIRECTORY + File.separator + TMP_SIMCOM_DIRECTORY + File.separator + SUMMARY_HTML_FILENAME;
     }
 
     static String getCatalogFilename() {
@@ -139,13 +139,15 @@ public class AuxiliaryUtility {
 
     static void deleteTemporaryDirectories() {
         Path path = Paths.get(TMP_ROOT_DIRECTORY).resolve(TMP_SIMCOM_DIRECTORY);
-        try {
-            Files.walk(path)
-                 .sorted(Comparator.reverseOrder())
-                 .map(Path::toFile)
-                 .forEach(File::delete);
-        } catch (IOException e) {
-            Dialogs.exceptionDialog(e);
+        if (Files.exists(path) && Files.isDirectory(path)) {
+            try {
+                Files.walk(path)
+                        .sorted(Comparator.reverseOrder())
+                        .map(Path::toFile)
+                        .forEach(File::delete);
+            } catch (IOException e) {
+                Dialogs.exceptionDialog(e);
+            }
         }
     }
 

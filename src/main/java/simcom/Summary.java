@@ -169,7 +169,9 @@ public class Summary {
             ));
         }
 
-        closingHtmlPart.append("</td></tr>");
+        closingHtmlPart.append(String.format("</td></tr></table><p>HTTP User-Agent: %s</p></body></html>",
+                AuxiliaryUtility.getHttpUserAgent()
+        ));
 
         // Write all parts to output stream
         try {
