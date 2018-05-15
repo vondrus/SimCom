@@ -1,13 +1,14 @@
 package simcom;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 import javafx.application.Platform;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
 
 class Dialogs {
 
@@ -135,13 +136,18 @@ class Dialogs {
                 "All graphs prepared for comparison will be removed!");
     }
 
-    static void aboutInformationDialog() {
-        genericInformationDialog(AuxiliaryUtility.getApplicationName(),
-                String.format("%s%n%s%n%s",
+    static void aboutInformationDialog(ImageView imageView) {
+        final Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("About");
+        alert.setHeaderText(AuxiliaryUtility.getApplicationName());
+        alert.setContentText(String.format(
+                "%s%n%s%n%s",
                 "Copyright \u00a9 2018 Petr Vondrus",
                 "Czech Technical University in Prague",
                 "Faculty of Electrical Engineering"
         ));
+        alert.setGraphic(imageView);
+        alert.showAndWait();
     }
 
     static void sameGraphInCatalogInformationDialog(String graphName) {

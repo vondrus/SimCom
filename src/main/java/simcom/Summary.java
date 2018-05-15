@@ -117,6 +117,7 @@ public class Summary {
         // Make body of the summary (row by row)
         HashAlgorithm[] hashAlgorithms = HashAlgorithm.values();
         int numberOfSimhashHashAlgorithms = hashAlgorithms.length;
+        double[] meanOfSimhashDifferences = new double[numberOfSimhashHashAlgorithms];
         int resultIndex = 0;
 
         for (CustomGraph graph1 : graphsForComparison) {
@@ -138,13 +139,28 @@ public class Summary {
                 innerHtmlPart.append("<td>");
 
                 // Edit distance method
-                innerHtmlPart.append(String.format("<div>%.4f</div>", editDistanceResults.get(resultIndex)));
+                double editDistanceResult = editDistanceResults.get(resultIndex);
+                innerHtmlPart.append(String.format(
+                                "<div>" +
+                                "<div id=\"resultCell\">%.4f</div>" +
+                                "<div id=\"resultCell\"></div>" +
+                                "</div>",
+                        editDistanceResult
+                ));
 
                 // Simhash method
                 for (int i = 0; i < numberOfSimhashHashAlgorithms; i++) {
-                    innerHtmlPart.append(String.format("<div style=\"color: %s\">%.4f</div>",
+                    double simhashResult = simhashResults.get(resultIndex * numberOfSimhashHashAlgorithms + i);
+                    double resultsDifference = simhashResult - editDistanceResult;
+                    meanOfSimhashDifferences[i] += resultsDifference;
+                    innerHtmlPart.append(String.format(
+                                    "<div>" +
+                                    "<div id=\"resultCell\" style=\"color: %s\">%.4f</div>" +
+                                    "<div id=\"resultCell\">(%+.4f)</div>" +
+                                    "</div>",
                             hashAlgorithms[i].getSummaryColor(),
-                            simhashResults.get(resultIndex * numberOfSimhashHashAlgorithms + i)
+                            simhashResult,
+                            resultsDifference
                     ));
                 }
 
@@ -156,16 +172,22 @@ public class Summary {
 
         // III. Closing HTML part --------------------------------------------
         StringBuilder closingHtmlPart = new StringBuilder(String.format(
-                "<tr id=\"legend\"><td>Legend:</td><td align=\"left\" colspan=\"%d\">",
+                "<tr id=\"legendRow\"><td>Legend:</td><td align=\"left\" colspan=\"%d\">",
                 graphsNumber
         ));
 
-        closingHtmlPart.append("<div style=\"color: Black\">Edit Distance method</div>");
+        closingHtmlPart.append("<div><div id=\"legendCell\">Edit Distance method</div></div>");
 
-        for (HashAlgorithm hashAlgorithm : hashAlgorithms) {
-            closingHtmlPart.append(String.format("<div style=\"color: %s\">SimHash method (hash algorithm %s)</div>",
-                    hashAlgorithm.getSummaryColor(),
-                    hashAlgorithm.getName()
+        for (int i = 0; i < numberOfSimhashHashAlgorithms; i++) {
+            closingHtmlPart.append(String.format(
+                            "<div>" +
+                            "<div id=\"legendCell\">SimHash method; hash algorithm: </div>" +
+                            "<div id=\"legendCell\" style=\"color: %s\">%s; </div>" +
+                            "<div id=\"legendCell\">mean of differences: %+.4f</div>" +
+                            "</div>",
+                    HashAlgorithm.values()[i].getSummaryColor(),
+                    HashAlgorithm.values()[i].getName(),
+                    meanOfSimhashDifferences[i] / (graphsNumber * graphsNumber)
             ));
         }
 

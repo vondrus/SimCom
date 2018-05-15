@@ -24,9 +24,14 @@ table {
 	font-weight: bold;
 }
 
-#legend {
+#legendRow {
 	background-color: Silver;
 	font-weight: bold;
+}
+
+#legendCell {
+    text-align: left;
+    display: inline-block;
 }
 
 div {
@@ -51,6 +56,12 @@ td {
     border-collapse: collapse;
     border: 1px solid black;
     padding: 5px;
+}
+
+#resultCell {
+    text-align: right;
+    width: 80px;
+    display: inline-block;
 }
 
 p {

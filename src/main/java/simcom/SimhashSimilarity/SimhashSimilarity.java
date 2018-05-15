@@ -142,7 +142,14 @@ public class SimhashSimilarity extends SimilarityMeasure {
                     simhashTable2.get(hashAlgorithm).getSimhashAsBytes()
             );
 
-            double similarity = 1 - (hammingDistance / (double) simhashTable1.get(hashAlgorithm).getSimhashLength());
+            double similarity = 1
+                    - (hammingDistance / (double) simhashTable1.get(hashAlgorithm).getSimhashLength())
+                    - hashAlgorithm.getProbNormalization(hammingDistance);
+
+            // Correct "too much normalization"
+            if (similarity < 0) {
+                similarity = 0;
+            }
 
             resultArrayList.add(similarity);
 

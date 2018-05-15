@@ -76,7 +76,7 @@ public class MainStageController implements Initializable {
 
     @FXML
     private void menuItemAboutOnAction() {
-        Dialogs.aboutInformationDialog();
+        Dialogs.aboutInformationDialog(new ImageView(this.getClass().getResource("/images/logo.png").toString()));
     }
 
     @FXML
